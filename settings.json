@@ -1,14 +1,14 @@
 {
-  "logo": "PhotoRoom-20260715_012445.jpg",
-  "store_name": "Garden Food",
-  "store_desc": "طعم ينبض بالحياة 🌱",
-  "whatsapp_number": "963991388013",
-  "whatsapp_template": "مرحباً، أود طلب التالي:",
-  "currency": "ل.س",
   "ui_greeting": "ماذا تشتهي اليوم؟ 😋",
-  "ui_back": "رجوع",
-  "ui_cart_word": "سلة الطلبات",
   "ui_cart_title": "مراجعة الطلب 🛒",
+  "whatsapp_template": "مرحباً، أود طلب التالي:",
+  "store_name": "Garden Food",
+  "logo": "PhotoRoom-20260715_012445.png",
+  "ui_checkout_btn": "تأكيد الطلب 💬",
+  "store_desc": "طعم ينبض بالحياة 🌱",
+  "currency": "ل.س",
+  "ui_back": "رجوع",
   "ui_add_btn": "إضافة +",
-  "ui_checkout_btn": "تأكيد الطلب 💬"
+  "whatsapp_number": "963991388013",
+  "ui_cart_word": "سلة الطلبات"
 }
