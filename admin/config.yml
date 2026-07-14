@@ -1,12 +1,13 @@
 backend:
   name: git-gateway
-  repo: majdmereee/menu-test # تأكد من اسم مستودعك هنا
+  repo: majdmereee/menu-test
   branch: main
   identity_url: https://auth.decapbridge.com/sites/0794f97d-26ce-425f-a989-e65ae53ce86d
   gateway_url: https://gateway.decapbridge.com
 
-media_folder: "images"
-public_folder: "/images"
+# إعدادات حفظ الصور: سيتم رفع الصور وحفظها في المسار الرئيسي للمستودع مباشرة
+media_folder: "."
+public_folder: "./"
 
 collections:
   - name: "settings"
@@ -16,13 +17,12 @@ collections:
         label: "الإعدادات العامة"
         name: "general"
         fields:
-          - { label: "شعار الموقع", name: "logo", widget: "string" }
+          - { label: "شعار الموقع", name: "logo", widget: "image" } # 🟢 تم التحويل إلى رفع صورة
           - { label: "اسم المطعم", name: "store_name", widget: "string" }
           - { label: "الوصف تحت الاسم", name: "store_desc", widget: "string" }
           - { label: "رقم الواتساب (بدون +)", name: "whatsapp_number", widget: "string" }
           - { label: "رسالة الواتساب", name: "whatsapp_template", widget: "text" }
           - { label: "العملة", name: "currency", widget: "string" }
-          # --- قسم النصوص القابلة للتعديل ---
           - { label: "الجملة الترحيبية (فوق الأقسام)", name: "ui_greeting", widget: "string", default: "ماذا تود أن تطلب؟ 😋" }
           - { label: "كلمة (زر الرجوع)", name: "ui_back", widget: "string", default: "رجوع" }
           - { label: "كلمة (السلة) في الزر العائم", name: "ui_cart_word", widget: "string", default: "السلة" }
@@ -43,7 +43,7 @@ collections:
             fields:
               - { label: "معرف القسم (مثل c1)", name: "id", widget: "string" }
               - { label: "اسم القسم", name: "name", widget: "string" }
-              - { label: "صورة القسم", name: "image", widget: "string" }
+              - { label: "صورة القسم", name: "image", widget: "image" } # 🟢 تم التحويل إلى رفع صورة
               - label: "الأصناف"
                 name: "items"
                 widget: "list"
@@ -51,4 +51,4 @@ collections:
                   - { label: "المعرف (مثل i1)", name: "id", widget: "string" }
                   - { label: "اسم الصنف", name: "name", widget: "string" }
                   - { label: "السعر", name: "price", widget: "string" }
-                  - { label: "صورة الصنف", name: "image", widget: "string" }
+                  - { label: "صورة الصنف", name: "image", widget: "image" } # 🟢 تم التحويل إلى رفع صورة
