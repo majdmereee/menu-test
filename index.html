@@ -3,102 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقعي الشخصي الجديد</title>
+    <title>منيو المطعم الرقمي 🍔</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background-color: #0f172a;
             color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0;
             padding: 20px;
-        }
-        .container {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px 30px;
-            border-radius: 24px;
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 0.8s ease-out;
-        }
-        .avatar {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(45deg, #38bdf8, #3b82f6);
-            border-radius: 50%;
-            margin: 0 auto 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            font-size: 40px;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
         }
-        h1 {
-            font-size: 28px;
-            margin-bottom: 12px;
-            background: linear-gradient(to left, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
         }
-        p {
-            color: #94a3b8;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 30px;
+        h1 { color: #f59e0b; font-size: 32px; }
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
         }
-        .badge {
-            display: inline-block;
-            background: rgba(16, 185, 129, 0.2);
-            color: #34d399;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .menu-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: right;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .btn {
-            display: block;
-            background: #3b82f6;
-            color: #ffffff;
+        .menu-item h3 { color: #38bdf8; margin-top: 0; }
+        .price { color: #10b981; font-weight: bold; font-size: 18px; }
+        .admin-btn {
+            margin-top: 50px;
+            padding: 10px 20px;
+            background: #475569;
+            color: #fff;
             text-decoration: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.3s;
         }
-        .btn:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .admin-btn:hover { background: #3b82f6; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="avatar">🎨</div>
-        <div class="badge">يعمل بنجاح ⚡</div>
-        <h1>مرحباً بك في عنواني الجديد!</h1>
-        <p>تم إطلاق هذا الموقع وتحديثه بالكامل عبر GitHub Pages مجاناً وبدون أي تكاليف أو حدود على التعديلات.</p>
-        <a href="#" class="btn" onclick="alert('شكراً لزيارتك لموقعي التجريبي!')">اضغط للتفاعل</a>
+    <div class="header">
+        <h1>قائمة الطعام اللذيذة 🍕</h1>
+        <p>تصفح أطباقنا المميزة والمحدثة مباشرة</p>
     </div>
 
+    <!-- حاوية عرض الأطباق تلقائياً -->
+    <div class="menu-container" id="menu-box">
+        <p>جاري تحميل المنيو...</p>
+    </div>
+
+    <!-- زر للانتقال للوحة التحكم -->
+    <a href="/admin/" class="admin-btn">تسجيل دخول الإدارة ⚙️</a>
+
+    <script>
+        // كود لجلب أطباق المنيو من ملف الـ JSON وعرضها
+        fetch('/menu.json')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('menu-box');
+                container.innerHTML = '';
+                data.meals.forEach(meal => {
+                    container.innerHTML += `
+                        <div class="menu-item">
+                            <h3>${meal.title}</h3>
+                            <p>${meal.description}</p>
+                            <span class="price">${meal.price} $</span>
+                        </div>
+                    `;
+                });
+            })
+            .catch(err => {
+                document.getElementById('menu-box').innerHTML = '<p>قم بإضافة أطباقك من لوحة التحكم أولاً!</p>';
+            });
+    </script>
 </body>
 </html>
