@@ -1,0 +1,26 @@
+backend:
+  name: github
+  repo: YOUR_GITHUB_USERNAME/YOUR_REPO_NAME
+  branch: main
+  # سنستخدم بوابة وسيطة مجانية لتسجيل الدخول بـ GitHub
+  base_url: https://auth.decapcms.org
+  auth_endpoint: api/auth
+
+media_folder: "images" # مجلد لحفظ الصور إذا أردت رفع صور مستقبلاً
+public_folder: "/images"
+
+collections:
+  - name: "menu"
+    label: "قائمة الطعام (المنيو)"
+    files:
+      - file: "menu.json"
+        label: "الأطباق"
+        name: "meals_list"
+        fields:
+          - label: "الأطباق النشطة"
+            name: "meals"
+            widget: "list"
+            fields:
+              - { label: "اسم الطبق", name: "title", widget: "string" }
+              - { label: "الوصف", name: "description", widget: "text" }
+              - { label: "السعر", name: "price", widget: "string" }
