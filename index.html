@@ -180,8 +180,8 @@
     </footer>
 
     <script>
-        // جلب البيانات ديناميكياً من ملف menu.json
-        fetch('./menu.json')
+        // جلب البيانات ديناميكياً مع إضافة معامل لمنع الكاش (Cache Buster)
+        fetch('./menu.json?v=' + new Date().getTime())
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById('menu-box');
