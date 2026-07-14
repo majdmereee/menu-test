@@ -3,87 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منيو المطعم الرقمي 🍔</title>
+    <title>مطعم اللقمة الشهية | القائمة الرقمية</title>
     <style>
+        :root {
+            --primary: #c5a880; /* لون ذهبي كلاسيكي */
+            --bg-dark: #111111;
+            --bg-card: #1a1a1a;
+            --text-light: #f5f5f5;
+            --text-muted: #999999;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* القسم الترحيبي */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200') no-repeat center center/cover;
+            height: 45vh;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-        }
-        .header {
             text-align: center;
-            margin-bottom: 40px;
-        }
-        h1 { color: #f59e0b; font-size: 32px; }
-        .menu-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1000px;
-        }
-        .menu-item {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 16px;
             padding: 20px;
-            text-align: right;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-bottom: 2px solid var(--primary);
         }
-        .menu-item h3 { color: #38bdf8; margin-top: 0; }
-        .price { color: #10b981; font-weight: bold; font-size: 18px; }
-        .admin-btn {
-            margin-top: 50px;
-            padding: 10px 20px;
-            background: #475569;
-            color: #fff;
-            text-decoration: none;
+
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            font-family: 'Georgia', serif;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin: 0;
+            max-width: 600px;
+        }
+
+        /* تفاصيل المطعم */
+        .info-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 15px;
+            background-color: var(--bg-card);
+            border-bottom: 1px solid #2a2a2a;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .info-bar span strong {
+            color: var(--primary);
+        }
+
+        /* حاوية المنيو */
+        .main-content {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background-color: var(--primary);
+            margin: 10px auto 0;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-item {
+            background-color: var(--bg-card);
+            border: 1px solid #222;
             border-radius: 8px;
-            font-size: 14px;
-            transition: 0.3s;
+            padding: 25px;
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .admin-btn:hover { background: #3b82f6; }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .menu-item-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .menu-item-price {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .menu-item-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* الفوتر */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #0a0a0a;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid #111;
+            margin-top: 60px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>قائمة الطعام اللذيذة 🍕</h1>
-        <p>تصفح أطباقنا المميزة والمحدثة مباشرة</p>
+    <!-- الجزء الترحيبي للمطعم -->
+    <header class="hero">
+        <h1>مطعم اللقمة الشهية</h1>
+        <p>نقدم لكم أرقى الأطباق المحضرة بشغف وبأجود المكونات الطازجة يومياً</p>
+    </header>
+
+    <!-- شريط معلومات المطعم السريعة -->
+    <div class="info-bar">
+        <span>📍 الموقع: <strong>وسط المدينة، الشارع العام</strong></span>
+        <span>🕒 أوقات العمل: <strong>12:00 ظهراً - 12:00 ليلاً</strong></span>
+        <span>📞 للحجز والاستفسار: <strong>0500000000</strong></span>
     </div>
 
-    <!-- حاوية عرض الأطباق تلقائياً -->
-    <div class="menu-container" id="menu-box">
-        <p>جاري تحميل المنيو...</p>
-    </div>
+    <!-- قائمة الطعام المحدثة -->
+    <main class="main-content">
+        <h2 class="section-title">قائمة الطعام الرئيسية</h2>
+        <div class="menu-grid" id="menu-box">
+            <p style="text-align: center; color: var(--text-muted); width: 100%;">جاري تحميل قائمة الطعام الفاخرة...</p>
+        </div>
+    </main>
 
-    <!-- زر للانتقال للوحة التحكم -->
-    <a href="/admin/" class="admin-btn">تسجيل دخول الإدارة ⚙️</a>
+    <footer>
+        <p>© 2026 مطعم اللقمة الشهية. جميع الحقوق محفوظة.</p>
+    </footer>
 
     <script>
-        // كود لجلب أطباق المنيو من ملف الـ JSON وعرضها
-        fetch('/menu.json')
+        // جلب البيانات ديناميكياً من ملف menu.json
+        fetch('./menu.json')
             .then(res => res.json())
             .then(data => {
                 const container = document.getElementById('menu-box');
                 container.innerHTML = '';
+                
+                if(!data.meals || data.meals.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">القائمة فارغة حالياً، يرجى إضافتها من لوحة التحكم.</p>';
+                    return;
+                }
+
                 data.meals.forEach(meal => {
                     container.innerHTML += `
                         <div class="menu-item">
-                            <h3>${meal.title}</h3>
-                            <p>${meal.description}</p>
-                            <span class="price">${meal.price} $</span>
+                            <div class="menu-item-header">
+                                <h3 class="menu-item-title">${meal.title}</h3>
+                                <span class="menu-item-price">$${meal.price}</span>
+                            </div>
+                            <p class="menu-item-desc">${meal.description}</p>
                         </div>
                     `;
                 });
             })
             .catch(err => {
-                document.getElementById('menu-box').innerHTML = '<p>قم بإضافة أطباقك من لوحة التحكم أولاً!</p>';
+                document.getElementById('menu-box').innerHTML = '<p style="text-align: center; color: var(--text-muted);">عذراً، حدث خطأ أثناء تحميل القائمة.</p>';
             });
     </script>
 </body>
