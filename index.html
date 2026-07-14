@@ -2,211 +2,318 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مطعم اللقمة الشهية | القائمة الرقمية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Garden Food Kiosk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #c5a880; /* لون ذهبي كلاسيكي */
-            --bg-dark: #111111;
-            --bg-card: #1a1a1a;
-            --text-light: #f5f5f5;
-            --text-muted: #999999;
+            --primary: #126322; /* أخضر غامق من اللوغو */
+            --secondary: #6cb043; /* أخضر فاتح من اللوغو */
+            --bg: #f4f7f6;
+            --text: #1a1a1a;
+            --card-bg: #ffffff;
+            --radius: 24px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            user-select: none;
         }
 
-        /* القسم الترحيبي */
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1200') no-repeat center center/cover;
-            height: 45vh;
+        /* حركات واقعية وسلسة جداً */
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* الهيدر العلوي */
+        .header {
+            background: var(--card-bg);
+            padding: 15px 20px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 20px;
-            border-bottom: 2px solid var(--primary);
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .hero h1 {
-            font-size: 3rem;
-            color: var(--primary);
-            margin: 0 0 10px 0;
-            font-family: 'Georgia', serif;
-            letter-spacing: 2px;
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            margin: 0;
-            max-width: 600px;
-        }
-
-        /* تفاصيل المطعم */
-        .info-bar {
+        .logo-container {
             display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 15px;
-            background-color: var(--bg-card);
-            border-bottom: 1px solid #2a2a2a;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
         }
 
-        .info-bar span strong {
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 15px rgba(18, 99, 34, 0.2);
+        }
+
+        .store-name { font-weight: 800; font-size: 1.5rem; color: var(--primary); }
+        
+        .back-btn {
+            background: rgba(18, 99, 34, 0.1);
             color: var(--primary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: 'Tajawal';
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: none;
+            transition: var(--transition);
         }
+        .back-btn:active { transform: scale(0.9); background: var(--primary); color: #fff; }
 
-        /* حاوية المنيو */
-        .main-content {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 2px;
-            background-color: var(--primary);
-            margin: 10px auto 0;
-        }
-
-        .menu-grid {
+        /* الشبكة الثنائية */
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+            padding-bottom: 100px; /* مساحة للسلة */
         }
 
-        .menu-item {
-            background-color: var(--bg-card);
-            border: 1px solid #222;
-            border-radius: 8px;
-            padding: 25px;
-            transition: transform 0.3s, border-color 0.3s;
+        /* الكروت */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
-        .menu-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
+        .card:active { transform: scale(0.94); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        
+        .card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
         }
 
-        .menu-item-header {
+        .card-body { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-title { font-weight: 800; font-size: 1.1rem; color: var(--text); text-align: center; margin-bottom: 5px; }
+        .card-desc { font-size: 0.85rem; color: #666; text-align: center; margin-bottom: 10px; flex-grow: 1; }
+        .card-price { font-weight: 900; font-size: 1.2rem; color: var(--primary); text-align: center; }
+
+        .add-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-family: 'Tajawal';
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(108, 176, 67, 0.4);
+            transition: var(--transition);
+        }
+        .add-btn:active { transform: scale(0.95); }
+
+        /* السلة العائمة */
+        .cart-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: var(--primary);
+            border-radius: 20px;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 12px;
+            align-items: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(18, 99, 34, 0.4);
+            transform: translateY(150%);
+            transition: var(--transition);
+            z-index: 1000;
         }
-
-        .menu-item-title {
-            font-size: 1.3rem;
+        .cart-bar.active { transform: translateY(0); }
+        
+        .cart-info h3 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+        .cart-info p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
+        
+        .checkout-btn {
+            background: white;
             color: var(--primary);
-            margin: 0;
-            font-weight: 600;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-family: 'Tajawal';
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
         }
+        .checkout-btn:active { transform: scale(0.9); }
 
-        .menu-item-price {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            font-weight: bold;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .menu-item-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        /* الفوتر */
-        footer {
-            text-align: center;
-            padding: 40px 20px;
-            background-color: #0a0a0a;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border-top: 1px solid #111;
-            margin-top: 60px;
-        }
     </style>
 </head>
 <body>
 
-    <!-- الجزء الترحيبي للمطعم -->
-    <header class="hero">
-        <h1>مطعم اللقمة الشهية</h1>
-        <p>نقدم لكم أرقى الأطباق المحضرة بشغف وبأجود المكونات الطازجة يومياً</p>
-    </header>
-
-    <!-- شريط معلومات المطعم السريعة -->
-    <div class="info-bar">
-        <span>📍 الموقع: <strong>وسط المدينة، الشارع العام</strong></span>
-        <span>🕒 أوقات العمل: <strong>12:00 ظهراً - 12:00 ليلاً</strong></span>
-        <span>📞 للحجز والاستفسار: <strong>0500000000</strong></span>
+    <div class="header">
+        <div class="logo-container">
+            <img src="" alt="Logo" class="logo" id="siteLogo">
+            <span class="store-name" id="siteName">جاري التحميل...</span>
+        </div>
+        <button class="back-btn" id="backBtn" onclick="renderCategories()">رجوع للأقسام</button>
     </div>
 
-    <!-- قائمة الطعام المحدثة -->
-    <main class="main-content">
-        <h2 class="section-title">قائمة الطعام الرئيسية</h2>
-        <div class="menu-grid" id="menu-box">
-            <p style="text-align: center; color: var(--text-muted); width: 100%;">جاري تحميل قائمة الطعام الفاخرة...</p>
-        </div>
-    </main>
+    <!-- حاوية العرض المتغيرة -->
+    <div class="grid-container" id="mainContainer"></div>
 
-    <footer>
-        <p>© 2026 مطعم اللقمة الشهية. جميع الحقوق محفوظة.</p>
-    </footer>
+    <!-- السلة -->
+    <div class="cart-bar" id="cartBar">
+        <div class="cart-info">
+            <h3 id="cartTotal">0 ل.س</h3>
+            <p id="cartCount">0 أصناف</p>
+        </div>
+        <button class="checkout-btn" onclick="sendWhatsApp()">إرسال الطلب 💬</button>
+    </div>
 
     <script>
-        // جلب البيانات ديناميكياً مع إضافة معامل لمنع الكاش (Cache Buster)
-        fetch('./menu.json?v=' + new Date().getTime())
-            .then(res => res.json())
-            .then(data => {
-                const container = document.getElementById('menu-box');
-                container.innerHTML = '';
-                
-                if(!data.meals || data.meals.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">القائمة فارغة حالياً، يرجى إضافتها من لوحة التحكم.</p>';
-                    return;
-                }
+        let appSettings = {};
+        let menuData = [];
+        let cart = [];
 
-                data.meals.forEach(meal => {
-                    container.innerHTML += `
-                        <div class="menu-item">
-                            <div class="menu-item-header">
-                                <h3 class="menu-item-title">${meal.title}</h3>
-                                <span class="menu-item-price">$${meal.price}</span>
-                            </div>
-                            <p class="menu-item-desc">${meal.description}</p>
+        // التهيئة وجلب البيانات برقم عشوائي لمنع الكاش
+        async function initApp() {
+            try {
+                const setRes = await fetch('./settings.json?v=' + Date.now());
+                appSettings = await setRes.json();
+                
+                document.getElementById('siteLogo').src = appSettings.logo;
+                document.getElementById('siteName').innerText = appSettings.store_name;
+
+                const menuRes = await fetch('./menu.json?v=' + Date.now());
+                const mData = await menuRes.json();
+                menuData = mData.categories || [];
+                
+                renderCategories();
+            } catch (e) {
+                console.error("خطأ في تحميل البيانات", e);
+            }
+        }
+
+        // عرض الأقسام بشكل ثنائي
+        function renderCategories() {
+            const container = document.getElementById('mainContainer');
+            document.getElementById('backBtn').style.display = 'none';
+            container.innerHTML = '';
+            
+            menuData.forEach((cat, index) => {
+                const delay = index * 0.05; // حركة متتالية
+                container.innerHTML += `
+                    <div class="card fade-in" style="animation-delay: ${delay}s" onclick="renderItems('${cat.id}')">
+                        <img src="${cat.image}" alt="${cat.name}">
+                        <div class="card-body" style="justify-content: center;">
+                            <h3 class="card-title">${cat.name}</h3>
                         </div>
-                    `;
-                });
-            })
-            .catch(err => {
-                document.getElementById('menu-box').innerHTML = '<p style="text-align: center; color: var(--text-muted);">عذراً، حدث خطأ أثناء تحميل القائمة.</p>';
+                    </div>
+                `;
             });
+        }
+
+        // عرض الأصناف للقسم المحدد
+        function renderItems(categoryId) {
+            const category = menuData.find(c => c.id === categoryId);
+            if(!category) return;
+
+            const container = document.getElementById('mainContainer');
+            document.getElementById('backBtn').style.display = 'block';
+            container.innerHTML = '';
+
+            category.items.forEach((item, index) => {
+                const delay = index * 0.05;
+                container.innerHTML += `
+                    <div class="card fade-in" style="animation-delay: ${delay}s">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="card-body">
+                            <h3 class="card-title">${item.name}</h3>
+                            <p class="card-desc">${item.description}</p>
+                            <div class="card-price">${item.price} ${appSettings.currency}</div>
+                            <button class="add-btn" onclick="addToCart('${item.id}', '${item.name}', ${item.price})">إضافة للسلة +</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // منطق السلة
+        function addToCart(id, name, price) {
+            const existing = cart.find(i => i.id === id);
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({ id, name, price: parseFloat(price), qty: 1 });
+            }
+            
+            // تأثير تفاعلي خفيف للاهتزاز عند الإضافة
+            if(navigator.vibrate) navigator.vibrate(50);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartBar = document.getElementById('cartBar');
+            if(cart.length === 0) {
+                cartBar.classList.remove('active');
+                return;
+            }
+            
+            let total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            let count = cart.reduce((sum, item) => sum + item.qty, 0);
+            
+            document.getElementById('cartTotal').innerText = `${total} ${appSettings.currency}`;
+            document.getElementById('cartCount').innerText = `${count} عناصر`;
+            
+            cartBar.classList.add('active');
+        }
+
+        // الإرسال السلس للواتساب
+        function sendWhatsApp() {
+            if(cart.length === 0) return;
+            
+            let message = appSettings.whatsapp_template + "\n\n";
+            let total = 0;
+            
+            cart.forEach(item => {
+                let itemTotal = item.price * item.qty;
+                total += itemTotal;
+                message += `▪ ${item.qty}x ${item.name} - ${itemTotal} ${appSettings.currency}\n`;
+            });
+            
+            message += `\n*الإجمالي المطلوب: ${total} ${appSettings.currency}*`;
+            
+            const waUrl = `https://wa.me/${appSettings.whatsapp_number}?text=${encodeURIComponent(message)}`;
+            window.location.href = waUrl;
+            
+            // تصفير السلة بعد الإرسال
+            cart = [];
+            updateCartUI();
+        }
+
+        // تشغيل التطبيق
+        initApp();
     </script>
 </body>
 </html>
