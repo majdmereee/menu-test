@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Garden Food - Kiosk</title>
+    <title>Garden Food Kiosk</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* ألوان حيوية جداً وعصرية ومشرقة */
-            --primary: #00a843; /* أخضر ناصع وحيوي جداً */
-            --primary-shadow: rgba(0, 168, 67, 0.3);
-            --bg-color: #f0f4f8; /* خلفية عصرية ليست بيضاء بالكامل لبروز الكروت */
+            /* مزيج الأبيض والأخضر الاحترافي */
+            --primary: #0ca143; /* أخضر الحديقة المنعش */
+            --primary-light: #e6f9ed; /* خلفية خضراء هادئة جداً */
+            --primary-shadow: rgba(12, 161, 67, 0.2);
+            --bg-color: #f7fbf8; /* أبيض مكسور بخضار خفيف جداً للنقاء */
             --card-bg: #ffffff;
-            --text-dark: #111827;
-            --text-muted: #6b7280;
-            --accent: #ff9800; /* برتقالي حيوي للسعر */
-            --radius: 24px;
-            --transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --text-dark: #0f2918; /* أخضر داكن جداً كلون بديل للأسود القاسي */
+            --text-muted: #6b8273;
+            --accent: #f59e0b;
+            --radius-lg: 32px;
+            --radius-md: 20px;
+            --transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -27,167 +29,145 @@
             color: var(--text-dark);
             overflow-x: hidden;
             user-select: none;
-            padding-bottom: 120px;
+            padding-bottom: 130px;
         }
 
-        /* الإشعارات العصرية */
+        /* توست الإشعارات */
         #toast-container {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
         .toast {
-            background: #111827; color: #fff; padding: 14px 28px; border-radius: 50px;
-            font-weight: 800; font-size: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: var(--primary); color: #fff; padding: 14px 28px; border-radius: 50px;
+            font-weight: 800; font-size: 1rem; box-shadow: 0 10px 25px var(--primary-shadow);
             animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, fadeOut 0.4s 2s forwards;
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 10px; border: 2px solid rgba(255,255,255,0.2);
         }
         @keyframes slideDown { 0% { opacity: 0; transform: translateY(-40px) scale(0.8); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes fadeOut { 100% { opacity: 0; transform: translateY(-20px); } }
 
-        /* الهيدر الحديث */
+        /* الهيدر الأبيض النقي */
         .header {
-            background: var(--card-bg);
-            padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.04);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 20px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 30px rgba(12, 161, 67, 0.05);
             position: sticky; top: 0; z-index: 100;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
         }
-        .brand-area { display: flex; align-items: center; gap: 12px; }
-        .logo {
-            width: 55px; height: 55px; border-radius: 16px;
-            object-fit: contain;
-            box-shadow: 0 5px 15px var(--primary-shadow);
-        }
+        .brand-area { display: flex; align-items: center; gap: 15px; }
+        .logo { width: 60px; height: 60px; border-radius: 18px; object-fit: contain; }
         .brand-text { display: flex; flex-direction: column; }
-        .store-name { font-weight: 900; font-size: 1.5rem; color: var(--primary); letter-spacing: -0.5px; }
-        .store-desc { font-weight: 700; font-size: 0.85rem; color: var(--text-muted); }
+        .store-name { font-weight: 900; font-size: 1.5rem; color: var(--text-dark); letter-spacing: -0.5px; }
+        .store-desc { font-weight: 700; font-size: 0.9rem; color: var(--primary); }
 
         .back-btn {
-            background: var(--bg-color); color: var(--text-dark);
+            background: var(--primary-light); color: var(--primary);
             border: none; padding: 10px 20px; border-radius: 50px;
             font-family: 'Tajawal'; font-weight: 800; font-size: 1rem;
             cursor: pointer; display: none; transition: var(--transition);
         }
-        .back-btn:active { transform: scale(0.9); background: var(--text-dark); color: #fff; }
+        .back-btn:active { transform: scale(0.9); background: var(--primary); color: #fff; }
 
-        /* شبكة المربعات الثنائية (Kiosk Grid) */
+        /* شبكة الكروت (2x2 Kiosk) */
         .kiosk-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 20px;
-            animation: fadeIn 0.4s ease-out;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 20px;
             will-change: transform, opacity;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ستايل المربعات (للقسم والصنف) */
-        .square-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column;
-            overflow: hidden; cursor: pointer;
-            transition: var(--transition);
-            transform: translateZ(0);
-            border: 2px solid transparent;
-        }
-        .square-card:active {
-            transform: scale(0.94);
-            border-color: var(--primary);
-            box-shadow: 0 10px 25px var(--primary-shadow);
+        .section-title {
+            grid-column: 1 / -1; font-weight: 900; font-size: 1.5rem;
+            color: var(--text-dark); padding: 10px 0; margin-bottom: -5px;
         }
 
-        /* مربعات الأقسام (صورة كاملة تقريباً) */
-        .cat-img {
-            width: 100%; aspect-ratio: 1 / 1;
-            object-fit: cover;
+        /* كروت الأقسام والأصناف (Soft UI) */
+        .card-square {
+            background: var(--card-bg); border-radius: var(--radius-lg);
+            box-shadow: 0 12px 35px rgba(12, 161, 67, 0.06);
+            display: flex; flex-direction: column; overflow: hidden;
+            cursor: pointer; transition: var(--transition);
+            transform: translateZ(0); border: 1px solid rgba(12, 161, 67, 0.05);
         }
-        .cat-title {
-            padding: 15px 10px; text-align: center;
-            font-weight: 900; font-size: 1.2rem; color: var(--text-dark);
-        }
+        .card-square:active { transform: scale(0.94); box-shadow: 0 5px 15px var(--primary-shadow); border-color: var(--primary); }
 
-        /* مربعات الأصناف */
-        .item-card { position: relative; padding-bottom: 10px; }
-        .item-img {
-            width: 100%; aspect-ratio: 1 / 0.8;
-            object-fit: cover; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
-        }
-        .item-info { padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        .item-title { font-weight: 900; font-size: 1.1rem; color: var(--text-dark); line-height: 1.2; margin-bottom: 5px; }
-        .item-price { font-weight: 900; font-size: 1.2rem; color: var(--accent); margin-bottom: 12px; }
+        /* الأقسام */
+        .cat-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+        .cat-title { padding: 16px 10px; text-align: center; font-weight: 900; font-size: 1.25rem; color: var(--text-dark); }
+
+        /* الأصناف */
+        .item-card { padding-bottom: 12px; }
+        .item-img { width: 100%; aspect-ratio: 1 / 0.85; object-fit: cover; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+        .item-info { padding: 12px 15px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .item-title { font-weight: 900; font-size: 1.15rem; color: var(--text-dark); line-height: 1.3; margin-bottom: 5px; }
+        .item-price { font-weight: 900; font-size: 1.25rem; color: var(--primary); margin-bottom: 12px; background: var(--primary-light); padding: 4px 12px; border-radius: 50px; }
         
         .add-btn {
-            background: var(--primary); color: #fff;
-            border: none; width: 90%; padding: 12px; border-radius: 14px;
+            background: var(--primary); color: #fff; border: none;
+            width: 100%; padding: 12px; border-radius: 16px;
             font-family: 'Tajawal'; font-weight: 900; font-size: 1.1rem;
-            box-shadow: 0 6px 15px var(--primary-shadow);
-            transition: var(--transition);
+            box-shadow: 0 8px 20px var(--primary-shadow); transition: var(--transition);
         }
         .add-btn:active { transform: scale(0.9); }
 
-        /* الزر العائم للسلة */
+        /* السلة العائمة */
         .cart-fab {
-            position: fixed; bottom: 20px; right: 20px; left: 20px;
+            position: fixed; bottom: 25px; right: 25px; left: 25px;
             background: var(--text-dark); color: #fff;
-            padding: 16px 24px; border-radius: 20px;
+            padding: 18px 25px; border-radius: 25px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.25); cursor: pointer;
+            box-shadow: 0 20px 40px rgba(15, 41, 24, 0.3); cursor: pointer;
             transform: translateY(150%); transition: var(--transition); z-index: 999;
         }
         .cart-fab.visible { transform: translateY(0); }
         .cart-fab:active { transform: scale(0.96); }
-        .fab-text { font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-        .fab-badge { background: var(--primary); padding: 4px 12px; border-radius: 12px; font-size: 1.1rem; }
+        .fab-text { font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 12px; }
+        .fab-badge { background: var(--primary); color: #fff; padding: 4px 14px; border-radius: 50px; font-size: 1.1rem; }
 
-        /* نافذة السلة (Bottom Sheet) */
+        /* نافذة السلة */
         .cart-sheet {
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: #fff; border-radius: 35px 35px 0 0;
-            padding: 25px 20px; box-shadow: 0 -10px 50px rgba(0,0,0,0.15);
+            background: var(--card-bg); border-radius: 40px 40px 0 0;
+            padding: 30px 25px; box-shadow: 0 -15px 50px rgba(12, 161, 67, 0.1);
             transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 1000; display: flex; flex-direction: column; gap: 20px;
         }
         .cart-sheet.active { transform: translateY(0); }
         
         .cart-header { display: flex; justify-content: space-between; align-items: center; }
-        .cart-header h3 { font-weight: 900; font-size: 1.5rem; color: var(--text-dark); }
-        .close-cart { background: var(--bg-color); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; font-weight: 900; cursor: pointer; }
+        .cart-header h3 { font-weight: 900; font-size: 1.6rem; color: var(--text-dark); }
+        .close-cart { background: var(--primary-light); color: var(--primary); border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; font-weight: 900; cursor: pointer; }
         
-        .cart-items-container { max-height: 40vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .cart-items-container { max-height: 45vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .cart-items-container::-webkit-scrollbar { display: none; }
         
         .cart-item {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--bg-color); padding: 12px 16px; border-radius: 16px;
+            background: var(--bg-color); padding: 15px 18px; border-radius: 20px;
+            border: 1px solid rgba(12, 161, 67, 0.05);
         }
-        .cart-item-info h4 { font-size: 1.1rem; font-weight: 900; color: var(--text-dark); }
-        .cart-item-info p { font-size: 1rem; font-weight: 800; color: var(--primary); margin-top: 5px; }
+        .cart-item-info h4 { font-size: 1.15rem; font-weight: 900; color: var(--text-dark); margin-bottom: 5px; }
+        .cart-item-info p { font-size: 1.05rem; font-weight: 800; color: var(--text-muted); }
         
-        .qty-controls { display: flex; align-items: center; gap: 15px; background: #fff; padding: 6px 12px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .qty-btn { background: none; border: none; font-size: 1.4rem; font-weight: 900; color: var(--text-dark); cursor: pointer; }
-        .qty-num { font-weight: 900; font-size: 1.2rem; color: var(--primary); }
+        .qty-controls { display: flex; align-items: center; gap: 15px; background: #fff; padding: 8px 15px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .qty-btn { background: none; border: none; font-size: 1.5rem; font-weight: 900; color: var(--primary); cursor: pointer; }
+        .qty-num { font-weight: 900; font-size: 1.3rem; color: var(--text-dark); }
 
         .checkout-btn {
             background: var(--primary); color: #fff; border: none;
-            padding: 20px; border-radius: 20px; font-family: 'Tajawal'; font-weight: 900;
+            padding: 22px; border-radius: 24px; font-family: 'Tajawal'; font-weight: 900;
             font-size: 1.3rem; cursor: pointer; transition: var(--transition);
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 10px 25px var(--primary-shadow);
+            box-shadow: 0 15px 30px var(--primary-shadow);
         }
         .checkout-btn:active { transform: scale(0.97); }
 
         .overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            background: rgba(15, 41, 24, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
             opacity: 0; pointer-events: none; transition: opacity 0.4s; z-index: 999;
         }
         .overlay.active { opacity: 1; pointer-events: all; }
         
-        .section-title { width: 100%; grid-column: 1 / -1; font-weight: 900; font-size: 1.4rem; margin-bottom: -5px; color: var(--text-dark); }
     </style>
 </head>
 <body>
@@ -200,31 +180,34 @@
         <div class="brand-area">
             <img src="" alt="Logo" class="logo" id="siteLogo">
             <div class="brand-text">
-                <span class="store-name" id="siteName">تحميل...</span>
-                <span class="store-desc">طلب سريع ومباشر ⚡</span>
+                <span class="store-name" id="siteName"></span>
+                <span class="store-desc" id="siteDesc"></span>
             </div>
         </div>
-        <button class="back-btn" id="backBtn" onclick="renderCategories()">رجوع</button>
+        <button class="back-btn" id="backBtn" onclick="renderCategories()"></button>
     </div>
 
-    <!-- شبكة المربعات (Kiosk Grid) -->
+    <!-- شبكة المربعات -->
     <div class="kiosk-grid" id="mainContainer"></div>
 
     <!-- الزر العائم -->
     <div class="cart-fab" id="cartFab" onclick="toggleCart()">
-        <div class="fab-text">🛒 السلة <span class="fab-badge" id="fabCount">0</span></div>
+        <div class="fab-text">
+            <span id="uiCartWord"></span> 
+            <span class="fab-badge" id="fabCount">0</span>
+        </div>
         <div class="fab-text" id="fabTotal">0</div>
     </div>
 
     <!-- نافذة السلة -->
     <div class="cart-sheet" id="cartSheet">
         <div class="cart-header">
-            <h3>طلباتك 🍔</h3>
+            <h3 id="uiCartTitle"></h3>
             <button class="close-cart" onclick="toggleCart()">✕</button>
         </div>
         <div class="cart-items-container" id="cartItemsList"></div>
         <button class="checkout-btn" onclick="sendWhatsApp()">
-            <span>إرسال للواتساب 💬</span>
+            <span id="uiCheckoutBtn"></span>
             <span id="sheetTotal">0</span>
         </button>
     </div>
@@ -234,11 +217,9 @@
         let menuData = [];
         let cart = [];
 
-        // دالة قوية لحل مشكلة اللوغو والصور المكسورة بشكل نهائي
         function fixUrl(url) {
             if (!url) return '';
             if (url.startsWith('http')) return url;
-            // إزالة أي شرطات مائلة في البداية لضمان قراءة الصورة من المجلد الحالي مباشرة
             return './' + url.replace(/^\/+/, '');
         }
 
@@ -257,12 +238,17 @@
                 const setRes = await fetch('./settings.json?v=' + Date.now());
                 appSettings = await setRes.json();
                 
-                // تطبيق رابط اللوغو، مع وضع الصورة الأساسية كبديل في حال فشل الرابط
+                // تطبيق الإعدادات والنصوص الديناميكية
                 const logoImg = document.getElementById('siteLogo');
                 logoImg.src = fixUrl(appSettings.logo || 'PhotoRoom-20260715_012445.jpg');
                 logoImg.onerror = function() { this.src = './PhotoRoom-20260715_012445.jpg'; };
                 
-                document.getElementById('siteName').innerText = appSettings.store_name || 'Garden Food';
+                document.getElementById('siteName').innerText = appSettings.store_name || '';
+                document.getElementById('siteDesc').innerText = appSettings.store_desc || '';
+                document.getElementById('backBtn').innerText = appSettings.ui_back || 'رجوع';
+                document.getElementById('uiCartWord').innerText = appSettings.ui_cart_word || 'السلة';
+                document.getElementById('uiCartTitle').innerText = appSettings.ui_cart_title || 'الطلبات';
+                document.getElementById('uiCheckoutBtn').innerText = appSettings.ui_checkout_btn || 'إتمام الطلب';
 
                 const menuRes = await fetch('./menu.json?v=' + Date.now());
                 const mData = await menuRes.json();
@@ -271,19 +257,17 @@
                 renderCategories();
             } catch (e) {
                 console.error("خطأ", e);
-                document.getElementById('mainContainer').innerHTML = '<h3 style="grid-column: 1/-1; text-align:center;">حدث خطأ في تحميل البيانات</h3>';
             }
         }
 
-        // عرض الأقسام بشكل مربعات كبيرة
         function renderCategories() {
             const container = document.getElementById('mainContainer');
             document.getElementById('backBtn').style.display = 'none';
-            container.innerHTML = '<div class="section-title">ماذا تود أن تطلب؟ 😋</div>';
+            container.innerHTML = `<div class="section-title">${appSettings.ui_greeting || 'ماذا تود أن تطلب؟'}</div>`;
             
             menuData.forEach((cat) => {
                 container.innerHTML += `
-                    <div class="square-card" onclick="renderItems('${cat.id}')">
+                    <div class="card-square" onclick="renderItems('${cat.id}')">
                         <img src="${fixUrl(cat.image)}" alt="${cat.name}" class="cat-img" loading="lazy">
                         <div class="cat-title">${cat.name}</div>
                     </div>
@@ -291,7 +275,6 @@
             });
         }
 
-        // عرض الأصناف داخل القسم المحدد كمربعات
         function renderItems(categoryId) {
             const category = menuData.find(c => c.id === categoryId);
             if(!category) return;
@@ -299,21 +282,18 @@
             const container = document.getElementById('mainContainer');
             document.getElementById('backBtn').style.display = 'block';
             
-            // إعادة تشغيل حركة الدخول السلسة
-            container.style.animation = 'none';
-            container.offsetHeight; 
-            container.style.animation = 'fadeIn 0.3s ease-out';
-            
             container.innerHTML = `<div class="section-title">${category.name}</div>`;
+
+            const btnText = appSettings.ui_add_btn || 'إضافة';
 
             category.items.forEach((item) => {
                 container.innerHTML += `
-                    <div class="square-card item-card">
+                    <div class="card-square item-card">
                         <img src="${fixUrl(item.image)}" alt="${item.name}" class="item-img" loading="lazy">
                         <div class="item-info">
                             <div class="item-title">${item.name}</div>
                             <div class="item-price">${item.price} ${appSettings.currency || ''}</div>
-                            <button class="add-btn" onclick="addToCart(event, '${item.id}', '${item.name}', ${item.price})">إضافة +</button>
+                            <button class="add-btn" onclick="addToCart(event, '${item.id}', '${item.name}', ${item.price})">${btnText}</button>
                         </div>
                     </div>
                 `;
@@ -321,7 +301,7 @@
         }
 
         function addToCart(event, id, name, price) {
-            event.stopPropagation(); // منع انتقال الضغطة للكرت الأب
+            event.stopPropagation();
             const existing = cart.find(i => i.id === id);
             if(existing) {
                 existing.qty++;
