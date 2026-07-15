@@ -5,9 +5,12 @@ backend:
   identity_url: https://auth.decapbridge.com/sites/0794f97d-26ce-425f-a989-e65ae53ce86d
   gateway_url: https://gateway.decapbridge.com
 
-# إعدادات حفظ الصور: سيتم رفع الصور وحفظها في المسار الرئيسي للمستودع مباشرة
-media_folder: "."
-public_folder: "./"
+# 🟢 هذا هو السطر السحري لتعريب لوحة التحكم بشكل سليم دون كسر الشاشة
+locale: 'ar'
+
+# 🟢 تحديد مجلد الصور (مهم جداً لكي يظهر زر الرفع وتُحفظ الصور بنجاح)
+media_folder: "images"
+public_folder: "/images"
 
 collections:
   - name: "settings"
@@ -17,7 +20,7 @@ collections:
         label: "الإعدادات العامة"
         name: "general"
         fields:
-          - { label: "شعار الموقع", name: "logo", widget: "image" } # 🟢 تم التحويل إلى رفع صورة
+          - { label: "شعار الموقع", name: "logo", widget: "image" }
           - { label: "اسم المطعم", name: "store_name", widget: "string" }
           - { label: "الوصف تحت الاسم", name: "store_desc", widget: "string" }
           - { label: "رقم الواتساب (بدون +)", name: "whatsapp_number", widget: "string" }
@@ -43,7 +46,7 @@ collections:
             fields:
               - { label: "معرف القسم (مثل c1)", name: "id", widget: "string" }
               - { label: "اسم القسم", name: "name", widget: "string" }
-              - { label: "صورة القسم", name: "image", widget: "image" } # 🟢 تم التحويل إلى رفع صورة
+              - { label: "صورة القسم", name: "image", widget: "image" }
               - label: "الأصناف"
                 name: "items"
                 widget: "list"
@@ -51,4 +54,4 @@ collections:
                   - { label: "المعرف (مثل i1)", name: "id", widget: "string" }
                   - { label: "اسم الصنف", name: "name", widget: "string" }
                   - { label: "السعر", name: "price", widget: "string" }
-                  - { label: "صورة الصنف", name: "image", widget: "image" } # 🟢 تم التحويل إلى رفع صورة
+                  - { label: "صورة الصنف", name: "image", widget: "image" }
