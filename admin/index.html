@@ -1,14 +1,37 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>لوحة التحكم | Garden Food</title>
-  <!-- إضافة أيقونة الموقع لتظهر في التبويب -->
   <link rel="icon" type="image/jpeg" href="/images/PhotoRoom-20260715_012445.jpg">
+  
+  <!-- استدعاء خط تجوال -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* فرض الخط العربي على كامل لوحة التحكم والأزرار */
+    * {
+      font-family: 'Tajawal', sans-serif !important;
+    }
+
+    /* تغيير لون الخلفية العام ليكون أريح للعين (رمادي فاتح جداً) */
+    body, #nc-root > div {
+      background-color: #f4f7f6 !important;
+    }
+
+    /* إصلاحات الموبايل لتظهر نافذة الرفع بوضوح */
+    @media (max-width: 768px) {
+      [role="dialog"] {
+        max-width: 100% !important;
+        width: 95% !important;
+        margin: 10px auto !important;
+        border-radius: 16px !important;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- هذا السطر السحري هو الذي يقوم ببناء لوحة التحكم بالكامل -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
 </body>
 </html>
