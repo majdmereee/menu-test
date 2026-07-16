@@ -7,66 +7,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0ca143;
-            --primary-light: #e6f9ed;
-            --bg: #f4f7f6;
-            --surface: #ffffff;
-            --text-dark: #111827;
-            --text-muted: #6b7280;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --radius-lg: 24px;
-            --radius-md: 16px;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --primary: #0ca143; --primary-light: #e6f9ed; --bg: #f4f7f6; --surface: #ffffff;
+            --text-dark: #111827; --text-muted: #6b7280; --danger: #ef4444; --warning: #f59e0b;
+            --info: #3b82f6; --radius-lg: 24px; --radius-md: 16px; --transition: all 0.3s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text-dark); padding-bottom: 90px; overflow-x: hidden; }
 
-        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; font-weight: 900; color: var(--primary); font-size: 1.2rem; display: none; backdrop-filter: blur(5px); }
-        .spinner { width: 40px; height: 40px; border: 4px solid var(--primary-light); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        /* شاشة التحميل */
+        .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; font-weight: 900; color: var(--primary); font-size: 1.2rem; display: none; backdrop-filter: blur(5px); }
+        .spinner { width: 45px; height: 45px; border: 5px solid var(--primary-light); border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* شاشة الدخول */
         #loginScreen { position: fixed; inset: 0; background: var(--surface); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         .login-box { width: 100%; max-width: 400px; }
-        .login-box input { width: 100%; padding: 18px; border-radius: var(--radius-md); border: 2px solid #eee; font-size: 1rem; text-align: left; direction: ltr; margin: 20px 0; outline: none; transition: var(--transition); }
-        .login-box input:focus { border-color: var(--primary); }
-        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 16px; border: none; border-radius: var(--radius-md); font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 8px 20px rgba(12, 161, 67, 0.2); transition: var(--transition); }
-        .btn-primary:active { transform: scale(0.96); }
+        .login-box input { width: 100%; padding: 18px; border-radius: var(--radius-md); border: 2px solid #eee; font-size: 1rem; text-align: left; direction: ltr; margin: 20px 0; outline: none; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 16px; border: none; border-radius: var(--radius-md); font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 8px 20px rgba(12, 161, 67, 0.2); }
+        
+        /* زر الحفظ الشامل العائم (يظهر عند وجود تعديلات) */
+        .save-all-banner { position: fixed; top: 15px; left: 15px; right: 15px; background: var(--text-dark); color: #fff; padding: 16px; border-radius: 20px; font-weight: 900; font-size: 1.1rem; text-align: center; cursor: pointer; z-index: 900; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateY(-150%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; justify-content: center; align-items: center; gap: 10px; border: 2px solid #333; }
+        .save-all-banner.visible { transform: translateY(0); }
 
-        .app-header { background: var(--surface); padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 100; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
-        .app-header h1 { font-weight: 900; font-size: 1.4rem; color: var(--text-dark); }
+        /* الهيدر والقوائم */
+        .app-header { background: var(--surface); padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 100; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
+        .app-header h1 { font-weight: 900; font-size: 1.5rem; color: var(--text-dark); margin: 0; }
         
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); display: flex; justify-content: space-around; padding: 15px 10px 25px 10px; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); border-top-left-radius: 30px; border-top-right-radius: 30px; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted); cursor: pointer; transition: var(--transition); width: 33%; font-weight: 800; font-size: 0.9rem; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted); cursor: pointer; width: 33%; font-weight: 800; font-size: 0.9rem; transition: var(--transition); }
         .nav-item.active { color: var(--primary); transform: translateY(-5px); }
-        .nav-icon { font-size: 1.5rem; }
 
-        .view { display: none; padding: 20px; animation: fadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .view { display: none; padding: 20px; animation: fadeIn 0.3s; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* تعديلات تصميم الكروت لتستوعب أزرار الترتيب والتعديل */
+        /* الكروت وأزرار التحكم */
         .card { background: var(--surface); padding: 12px; border-radius: var(--radius-lg); box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; display: flex; gap: 12px; align-items: center; border: 1px solid rgba(0,0,0,0.02); }
-        .card img { width: 70px; height: 70px; border-radius: 14px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
+        .card img { width: 75px; height: 75px; border-radius: 16px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
         .card-info { flex-grow: 1; min-width: 0; }
-        .card-info h3 { font-weight: 900; font-size: 1.1rem; margin-bottom: 3px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-info h3 { font-weight: 900; font-size: 1.1rem; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card-info p { font-weight: 800; color: var(--primary); font-size: 0.95rem; }
         .card-desc { font-size: 0.8rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .actions-group { display: flex; flex-direction: column; gap: 5px; }
-        .actions-row { display: flex; gap: 5px; justify-content: flex-end; }
-        .action-btn { background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
-        .action-btn:active { transform: scale(0.9); }
+        .actions-group { display: flex; flex-direction: column; gap: 6px; }
+        .actions-row { display: flex; gap: 6px; justify-content: flex-end; }
+        .action-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .action-btn.delete { color: var(--danger); background: #fee2e2; }
         .action-btn.edit { color: var(--info); background: #e0f2fe; }
         .action-btn.move { color: var(--text-dark); background: #f3f4f6; }
 
-        .fab { position: fixed; bottom: 100px; right: 20px; background: var(--primary); color: white; width: 60px; height: 60px; border-radius: 20px; font-size: 2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(12, 161, 67, 0.4); cursor: pointer; transition: var(--transition); border: none; z-index: 99; }
-        .fab:active { transform: scale(0.9); }
+        .fab { position: fixed; bottom: 100px; right: 20px; background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 22px; font-size: 2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(12, 161, 67, 0.4); border: none; z-index: 99; cursor: pointer; }
 
-        .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(3px); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        /* النوافذ السفلية (Sheets) */
+        .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .sheet-overlay.active { opacity: 1; pointer-events: all; }
         .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 35px 35px 0 0; padding: 25px 20px 40px 20px; z-index: 1000; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 -15px 40px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
         .bottom-sheet.active { transform: translateY(0); }
@@ -75,42 +69,38 @@
         .close-sheet { background: var(--bg); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
 
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-weight: 800; font-size: 0.95rem; margin-bottom: 8px; color: var(--text-dark); }
-        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 16px; border-radius: var(--radius-md); border: 2px solid #eee; font-family: 'Tajawal'; font-size: 1rem; font-weight: 700; color: var(--text-dark); background: var(--bg); outline: none; transition: var(--transition); }
-        .input-group input:focus, .input-group textarea:focus { border-color: var(--primary); background: var(--surface); }
+        .input-group label { display: block; font-weight: 800; font-size: 0.95rem; margin-bottom: 8px; }
+        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 16px; border-radius: var(--radius-md); border: 2px solid #eee; font-family: 'Tajawal'; font-size: 1rem; font-weight: 700; outline: none; background: var(--bg); }
         
-        .image-upload-box { background: var(--bg); border: 2px dashed #cbd5e1; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; position: relative; cursor: pointer; margin-bottom: 20px; transition: var(--transition); }
-        .image-upload-box:active { background: #e2e8f0; }
+        .image-upload-box { background: var(--bg); border: 2px dashed #cbd5e1; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; position: relative; margin-bottom: 20px; }
         .image-upload-box input[type="file"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
         .image-upload-box img { max-width: 100%; max-height: 200px; border-radius: 12px; margin-top: 15px; display: none; object-fit: contain; }
-        .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
-        
-        .section-title { font-weight: 900; font-size: 1.2rem; color: var(--primary); margin: 25px 0 15px 0; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- شاشة التحميل -->
-    <div class="loader-overlay" id="loader">
-        <div class="spinner"></div>
-        <span id="loaderText">جاري الحفظ...</span>
+    <!-- زر الحفظ الشامل (يظهر فقط عند إجراء أي تعديل) -->
+    <div id="saveAllBanner" class="save-all-banner" onclick="saveAllChanges()">
+        <span>💾</span> حفظ جميع التعديلات
     </div>
 
-    <!-- شاشة الدخول -->
+    <div class="loader-overlay" id="loader">
+        <div class="spinner"></div>
+        <span id="loaderText">جاري تحميل البيانات...</span>
+    </div>
+
     <div id="loginScreen">
         <h1 style="font-weight:900; color:var(--primary); font-size:2rem; margin-bottom:10px;">إدارة المطعم 👨‍🍳</h1>
         <div class="login-box">
             <input type="password" id="ghToken" placeholder="أدخل مفتاح GitHub (ghp_...)">
-            <button class="btn-primary" onclick="initApp()">دخول</button>
+            <button class="btn-primary" onclick="initApp()">دخول للوحة</button>
         </div>
     </div>
 
-    <!-- الهيدر -->
     <div class="app-header">
         <h1 id="headerTitle">المنتجات 🍔</h1>
     </div>
 
-    <!-- الحاويات الرئيسية -->
     <div id="view-products" class="view active">
         <div id="productsList"></div>
         <button class="fab" onclick="openProductSheet()">+</button>
@@ -121,24 +111,6 @@
         <button class="fab" onclick="openCategorySheet()">+</button>
     </div>
 
-    <div id="view-settings" class="view">
-        <div class="card" style="flex-direction: column; align-items: stretch; gap: 0;">
-            <div class="section-title">✨ الهوية</div>
-            <div class="image-upload-box" id="logoUploadBox">
-                <input type="file" id="sLogo" accept="image/*" onchange="previewImage(event, 'sLogoPreview')">
-                <div class="upload-icon">📸</div>
-                <div style="font-weight:800;">تغيير الشعار</div>
-                <img id="sLogoPreview" src="">
-            </div>
-            <div class="input-group"><label>اسم المطعم</label><input type="text" id="sName"></div>
-            <div class="input-group"><label>الوصف</label><input type="text" id="sDesc"></div>
-            <div class="input-group"><label>رقم الواتساب (بدون +)</label><input type="text" id="sWhatsApp"></div>
-            <div class="input-group"><label>رسالة الواتساب</label><textarea id="sMsg" rows="2"></textarea></div>
-            <div class="input-group"><label>العملة</label><input type="text" id="sCurrency"></div>
-            <button class="btn-primary" style="margin-top:20px;" onclick="saveSettings()">حفظ الإعدادات 💾</button>
-        </div>
-    </div>
-
     <!-- شريط التنقل -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('products', 'المنتجات 🍔', this)">
@@ -147,33 +119,30 @@
         <div class="nav-item" onclick="switchTab('categories', 'الأقسام 🗂️', this)">
             <span class="nav-icon">🗂️</span><span>الأقسام</span>
         </div>
-        <div class="nav-item" onclick="switchTab('settings', 'الإعدادات ⚙️', this)">
-            <span class="nav-icon">⚙️</span><span>الإعدادات</span>
-        </div>
     </div>
 
     <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheets()"></div>
 
-    <!-- نافذة المنتج (للإضافة والتعديل) -->
+    <!-- نافذة المنتج -->
     <div class="bottom-sheet" id="productSheet">
         <div class="sheet-header">
             <h2 id="pSheetTitle">إضافة منتج</h2>
             <button class="close-sheet" onclick="closeSheets()">✕</button>
         </div>
         <div class="input-group"><label>اسم المنتج</label><input type="text" id="pName"></div>
-        <div class="input-group"><label>الوصف (اختياري)</label><textarea id="pDesc" rows="2"></textarea></div>
+        <div class="input-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
         <div class="input-group"><label>السعر</label><input type="number" id="pPrice"></div>
         <div class="input-group"><label>القسم</label><select id="pCategory"></select></div>
         <div class="image-upload-box">
             <input type="file" id="pImage" accept="image/*" onchange="previewImage(event, 'pPreview')">
-            <div class="upload-icon">📸</div>
-            <div style="font-weight:800;">اضغط لتغيير الصورة</div>
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">📸</div>
+            <div style="font-weight:800;">تغيير الصورة</div>
             <img id="pPreview" src="">
         </div>
-        <button class="btn-primary" onclick="saveProduct()">حفظ المنتج ✔️</button>
+        <button class="btn-primary" onclick="applyProductChange()">تم (تأكيد التعديل) ✔️</button>
     </div>
 
-    <!-- نافذة القسم (للإضافة والتعديل) -->
+    <!-- نافذة القسم -->
     <div class="bottom-sheet" id="categorySheet">
         <div class="sheet-header">
             <h2 id="cSheetTitle">إضافة قسم</h2>
@@ -182,26 +151,24 @@
         <div class="input-group"><label>اسم القسم</label><input type="text" id="cName"></div>
         <div class="image-upload-box">
             <input type="file" id="cImage" accept="image/*" onchange="previewImage(event, 'cPreview')">
-            <div class="upload-icon">📸</div>
-            <div style="font-weight:800;">اضغط لتغيير الصورة</div>
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">📸</div>
+            <div style="font-weight:800;">تغيير الصورة</div>
             <img id="cPreview" src="">
         </div>
-        <button class="btn-primary" onclick="saveCategory()">حفظ القسم ✔️</button>
+        <button class="btn-primary" onclick="applyCategoryChange()">تم (تأكيد التعديل) ✔️</button>
     </div>
 
     <script>
         const REPO = 'majdmereee/menu-test';
         let PAT = localStorage.getItem('gh_pat');
-        let appSettings = {}, menuData = { categories: [] };
-        let settingsSha = '', menuSha = '';
+        let menuData = { categories: [] };
         
-        // متغيرات التعديل
-        let currentEditMode = null; // 'product' or 'category'
+        let hasUnsavedChanges = false;
+        let currentEditMode = null; 
         let editId = null;
         let editOldCatId = null; 
-        let currentImgPath = null; // للاحتفاظ بالصورة القديمة إذا لم يرفع جديدة
-
-        let tempUploads = { product: null, category: null, settings: null };
+        let currentImgPath = null; 
+        let tempUploads = { product: null, category: null };
 
         function utoa(str) { return btoa(unescape(encodeURIComponent(str))); }
         function atou(str) { return decodeURIComponent(escape(atob(str))); }
@@ -219,6 +186,25 @@
         function showLoader(text) { document.getElementById('loaderText').innerText = text; document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
+        // إظهار زر "حفظ جميع التعديلات"
+        function markUnsaved() {
+            hasUnsavedChanges = true;
+            document.getElementById('saveAllBanner').classList.add('visible');
+        }
+
+        // إخفاء زر الحفظ
+        function markSaved() {
+            hasUnsavedChanges = false;
+            document.getElementById('saveAllBanner').classList.remove('visible');
+        }
+
+        // دالة للتعامل مع مسار الصور (محلي مؤقت أو من جيت هب)
+        function getImgSrc(imgStr) {
+            if(!imgStr) return 'https://via.placeholder.com/70';
+            if(imgStr.startsWith('data:image')) return imgStr; // صورة محلية مؤقتة لم ترفع بعد
+            return `../${imgStr.replace('./', '')}`; // صورة مرفوعة مسبقاً
+        }
+
         async function ghApi(path, method = 'GET', body = null) {
             const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
                 method, headers: { 'Authorization': `token ${PAT}`, 'Content-Type': 'application/json' },
@@ -234,13 +220,9 @@
         async function loadData() {
             showLoader("جاري تحميل البيانات...");
             try {
-                const sData = await ghApi('settings.json');
-                settingsSha = sData.sha; appSettings = JSON.parse(atou(sData.content));
-                
                 const mData = await ghApi('menu.json');
-                menuSha = mData.sha; menuData = JSON.parse(atou(mData.content));
-                
-                populateSettingsUI(); renderCategories(); renderProducts();
+                menuData = JSON.parse(atou(mData.content));
+                renderCategories(); renderProducts();
             } catch (e) { alert("حدث خطأ."); }
             hideLoader();
         }
@@ -267,26 +249,21 @@
                 document.getElementById(previewId).style.display = 'inline-block';
                 const base64 = e.target.result.split(',')[1];
                 const ext = file.name.split('.').pop();
-                if(previewId === 'pPreview') tempUploads.product = { base64, ext };
-                else if (previewId === 'cPreview') tempUploads.category = { base64, ext };
-                else if (previewId === 'sLogoPreview') tempUploads.settings = { base64, ext };
+                
+                // حفظ البيانات المؤقتة بدلاً من رفعها فوراً
+                if(previewId === 'pPreview') tempUploads.product = { base64, ext, fullData: e.target.result };
+                else if (previewId === 'cPreview') tempUploads.category = { base64, ext, fullData: e.target.result };
             }
             reader.readAsDataURL(file);
         }
 
-        async function uploadImageToGithub(base64, ext) {
-            const fileName = `img_${Date.now()}.${ext}`; const path = `images/${fileName}`;
-            await ghApi(path, 'PUT', { message: `Upload image`, content: base64 });
-            return `./${path}`;
-        }
-
-        // ================= الأقسام =================
+        // ================= الأقسام (تعديل محلي فقط) =================
         function renderCategories() {
             const list = document.getElementById('categoriesList'); list.innerHTML = '';
             menuData.categories.forEach((cat, index) => {
                 list.innerHTML += `
                     <div class="card">
-                        <img src="../${cat.image.replace('./', '')}" onerror="this.src='https://via.placeholder.com/70'">
+                        <img src="${getImgSrc(cat.image)}" onerror="this.src='https://via.placeholder.com/70'">
                         <div class="card-info">
                             <h3>${cat.name}</h3>
                             <span class="card-desc">${cat.items ? cat.items.length : 0} منتجات</span>
@@ -313,56 +290,49 @@
 
             if(id) {
                 const cat = menuData.categories.find(c => c.id === id);
-                nameInput.value = cat.name;
-                currentImgPath = cat.image;
-                imgPreview.src = `../${cat.image.replace('./', '')}`;
-                imgPreview.style.display = 'inline-block';
+                nameInput.value = cat.name; currentImgPath = cat.image;
+                imgPreview.src = getImgSrc(cat.image); imgPreview.style.display = 'inline-block';
             } else {
                 nameInput.value = ''; currentImgPath = null; imgPreview.style.display = 'none';
             }
-            
             document.getElementById('sheetOverlay').classList.add('active');
             document.getElementById('categorySheet').classList.add('active');
         }
 
-        async function saveCategory() {
+        function applyCategoryChange() {
             const name = document.getElementById('cName').value;
             if(!name || (!tempUploads.category && !editId)) return alert("الاسم والصورة مطلوبان!");
             
-            showLoader("جاري الحفظ...");
-            try {
-                let imgPath = currentImgPath;
-                if(tempUploads.category) { imgPath = await uploadImageToGithub(tempUploads.category.base64, tempUploads.category.ext); }
-                
-                if(editId) {
-                    const cat = menuData.categories.find(c => c.id === editId);
-                    cat.name = name; cat.image = imgPath;
-                } else {
-                    menuData.categories.push({ id: `c_${Date.now()}`, name, image: imgPath, items: [] });
-                }
-                
-                await saveMenuDataFile(); renderCategories(); renderProducts(); closeSheets();
-            } catch(e) { alert("خطأ!"); }
-            hideLoader();
+            let imgPath = currentImgPath;
+            if(tempUploads.category) { imgPath = tempUploads.category.fullData; } // نحفظ الصورة كـ Data URL محلياً
+            
+            if(editId) {
+                const cat = menuData.categories.find(c => c.id === editId);
+                cat.name = name; cat.image = imgPath;
+                if(tempUploads.category) { cat.tempBase64 = tempUploads.category.base64; cat.tempExt = tempUploads.category.ext; }
+            } else {
+                const newCat = { id: `c_${Date.now()}`, name, image: imgPath, items: [] };
+                if(tempUploads.category) { newCat.tempBase64 = tempUploads.category.base64; newCat.tempExt = tempUploads.category.ext; }
+                menuData.categories.push(newCat);
+            }
+            
+            markUnsaved(); renderCategories(); renderProducts(); closeSheets();
         }
 
-        async function moveCategory(index, direction) {
-            if (index + direction < 0 || index + direction >= menuData.categories.length) return;
-            showLoader("جاري الترتيب...");
+        function moveCategory(index, direction) {
             const temp = menuData.categories[index];
             menuData.categories[index] = menuData.categories[index + direction];
             menuData.categories[index + direction] = temp;
-            await saveMenuDataFile(); renderCategories(); hideLoader();
+            markUnsaved(); renderCategories();
         }
 
-        async function deleteCategory(id) {
-            if(!confirm("حذف القسم سيمسح كل منتجاته! متأكد؟")) return;
-            showLoader("جاري الحذف...");
+        function deleteCategory(id) {
+            if(!confirm("سيتم حذف القسم مع كل منتجاته! متأكد؟")) return;
             menuData.categories = menuData.categories.filter(c => c.id !== id);
-            await saveMenuDataFile(); renderCategories(); renderProducts(); hideLoader();
+            markUnsaved(); renderCategories(); renderProducts();
         }
 
-        // ================= المنتجات =================
+        // ================= المنتجات (تعديل محلي فقط) =================
         function renderProducts() {
             const list = document.getElementById('productsList'); list.innerHTML = '';
             menuData.categories.forEach(cat => {
@@ -370,11 +340,11 @@
                 cat.items.forEach((item, index) => {
                     list.innerHTML += `
                         <div class="card">
-                            <img src="../${item.image.replace('./', '')}" onerror="this.src='https://via.placeholder.com/70'">
+                            <img src="${getImgSrc(item.image)}" onerror="this.src='https://via.placeholder.com/70'">
                             <div class="card-info">
                                 <h3>${item.name}</h3>
-                                <p>${item.price} ${appSettings.currency || ''}</p>
-                                <span class="card-desc">${cat.name} ${item.description ? ' - '+item.description : ''}</span>
+                                <p>${item.price}</p>
+                                <span class="card-desc">${cat.name} ${item.description ? '- '+item.description : ''}</span>
                             </div>
                             <div class="actions-group">
                                 <div class="actions-row">
@@ -406,114 +376,99 @@
                 document.getElementById('pName').value = item.name;
                 document.getElementById('pDesc').value = item.description || '';
                 document.getElementById('pPrice').value = item.price;
-                catSelect.value = catId;
-                
-                currentImgPath = item.image;
-                imgPreview.src = `../${item.image.replace('./', '')}`;
-                imgPreview.style.display = 'inline-block';
+                catSelect.value = catId; currentImgPath = item.image;
+                imgPreview.src = getImgSrc(item.image); imgPreview.style.display = 'inline-block';
             } else {
                 document.getElementById('pName').value = ''; document.getElementById('pDesc').value = '';
-                document.getElementById('pPrice').value = ''; currentImgPath = null;
-                imgPreview.style.display = 'none';
+                document.getElementById('pPrice').value = ''; currentImgPath = null; imgPreview.style.display = 'none';
             }
-            
             document.getElementById('sheetOverlay').classList.add('active');
             document.getElementById('productSheet').classList.add('active');
         }
 
-        async function saveProduct() {
+        function applyProductChange() {
             const name = document.getElementById('pName').value;
             const desc = document.getElementById('pDesc').value;
             const price = document.getElementById('pPrice').value;
             const newCatId = document.getElementById('pCategory').value;
 
-            if(!name || !price || (!tempUploads.product && !editId)) return alert("الاسم، السعر، والصورة مطلوبان!");
+            if(!name || !price || (!tempUploads.product && !editId)) return alert("الاسم، السعر والصورة مطلوبان!");
             
-            showLoader("جاري الحفظ...");
-            try {
-                let imgPath = currentImgPath;
-                if(tempUploads.product) { imgPath = await uploadImageToGithub(tempUploads.product.base64, tempUploads.product.ext); }
-                
-                if(editId) {
-                    // إذا تغير القسم، نحذفه من القديم ونضيفه للجديد
-                    if(editOldCatId !== newCatId) {
-                        const oldCat = menuData.categories.find(c => c.id === editOldCatId);
-                        const itemObj = oldCat.items.find(i => i.id === editId);
-                        oldCat.items = oldCat.items.filter(i => i.id !== editId);
-                        
-                        itemObj.name = name; itemObj.description = desc; itemObj.price = price; itemObj.image = imgPath;
-                        menuData.categories.find(c => c.id === newCatId).items.push(itemObj);
-                    } else {
-                        // تعديل في نفس القسم
-                        const item = menuData.categories.find(c => c.id === newCatId).items.find(i => i.id === editId);
-                        item.name = name; item.description = desc; item.price = price; item.image = imgPath;
-                    }
+            let imgPath = currentImgPath;
+            if(tempUploads.product) { imgPath = tempUploads.product.fullData; }
+            
+            let itemObj;
+            if(editId) {
+                if(editOldCatId !== newCatId) {
+                    const oldCat = menuData.categories.find(c => c.id === editOldCatId);
+                    itemObj = oldCat.items.find(i => i.id === editId);
+                    oldCat.items = oldCat.items.filter(i => i.id !== editId);
+                    menuData.categories.find(c => c.id === newCatId).items.push(itemObj);
                 } else {
-                    const newItem = { id: `i_${Date.now()}`, name, description: desc, price, image: imgPath };
-                    menuData.categories.find(c => c.id === newCatId).items.push(newItem);
+                    itemObj = menuData.categories.find(c => c.id === newCatId).items.find(i => i.id === editId);
                 }
-                
-                await saveMenuDataFile(); renderProducts(); renderCategories(); closeSheets();
-            } catch(e) { alert("خطأ!"); }
-            hideLoader();
+            } else {
+                itemObj = { id: `i_${Date.now()}` };
+                menuData.categories.find(c => c.id === newCatId).items.push(itemObj);
+            }
+
+            itemObj.name = name; itemObj.description = desc; itemObj.price = price; itemObj.image = imgPath;
+            if(tempUploads.product) { itemObj.tempBase64 = tempUploads.product.base64; itemObj.tempExt = tempUploads.product.ext; }
+
+            markUnsaved(); renderProducts(); renderCategories(); closeSheets();
         }
 
-        async function moveProduct(catId, index, direction) {
+        function moveProduct(catId, index, direction) {
             const cat = menuData.categories.find(c => c.id === catId);
-            if (index + direction < 0 || index + direction >= cat.items.length) return;
-            showLoader("جاري الترتيب...");
             const temp = cat.items[index];
             cat.items[index] = cat.items[index + direction];
             cat.items[index + direction] = temp;
-            await saveMenuDataFile(); renderProducts(); hideLoader();
+            markUnsaved(); renderProducts();
         }
 
-        async function deleteItem(catId, itemId) {
+        function deleteItem(catId, itemId) {
             if(!confirm("متأكد من الحذف؟")) return;
-            showLoader("جاري الحذف...");
             const cat = menuData.categories.find(c => c.id === catId);
             cat.items = cat.items.filter(i => i.id !== itemId);
-            await saveMenuDataFile(); renderProducts(); renderCategories(); hideLoader();
+            markUnsaved(); renderProducts(); renderCategories();
         }
 
-        async function saveMenuDataFile() {
-            const content = utoa(JSON.stringify(menuData, null, 2));
-            const res = await ghApi('menu.json', 'PUT', { message: "Update menu data", content, sha: menuSha });
-            menuSha = res.content.sha;
-        }
-
-        // ================= الإعدادات =================
-        function populateSettingsUI() {
-            document.getElementById('sName').value = appSettings.store_name || '';
-            document.getElementById('sDesc').value = appSettings.store_desc || '';
-            document.getElementById('sWhatsApp').value = appSettings.whatsapp_number || '';
-            document.getElementById('sMsg').value = appSettings.whatsapp_template || '';
-            document.getElementById('sCurrency').value = appSettings.currency || '';
-            if(appSettings.logo) {
-                const logoImg = document.getElementById('sLogoPreview');
-                logoImg.src = `../${appSettings.logo.replace('./', '')}`;
-                logoImg.style.display = 'inline-block';
-            }
-        }
-
-        async function saveSettings() {
-            showLoader("جاري الحفظ...");
+        // ================= نظام الحفظ الشامل (Bulk Save) =================
+        async function saveAllChanges() {
+            showLoader("جاري رفع الصور وحفظ كافة التعديلات للموقع... ⏳");
             try {
-                if(tempUploads.settings) {
-                    appSettings.logo = await uploadImageToGithub(tempUploads.settings.base64, tempUploads.settings.ext);
-                    tempUploads.settings = null;
-                }
-                appSettings.store_name = document.getElementById('sName').value;
-                appSettings.store_desc = document.getElementById('sDesc').value;
-                appSettings.whatsapp_number = document.getElementById('sWhatsApp').value;
-                appSettings.whatsapp_template = document.getElementById('sMsg').value;
-                appSettings.currency = document.getElementById('sCurrency').value;
+                // 1. جلب أحدث SHA لتجنب أخطاء التزامن من جيت هب (حل مشكلة الـ 25 ثانية)
+                const latestMenu = await ghApi('menu.json');
+                let liveSha = latestMenu.sha;
 
-                const content = utoa(JSON.stringify(appSettings, null, 2));
-                const res = await ghApi('settings.json', 'PUT', { message: "Update settings", content, sha: settingsSha });
-                settingsSha = res.content.sha;
-                alert("تم الحفظ بنجاح!");
-            } catch(e) { alert("خطأ!"); }
+                // 2. رفع الصور الجديدة فقط (الموجودة كبيانات مؤقتة)
+                for (let cat of menuData.categories) {
+                    if (cat.tempBase64) {
+                        const path = `images/img_${Date.now()}_${Math.floor(Math.random()*1000)}.${cat.tempExt}`;
+                        await ghApi(path, 'PUT', { message: 'Upload Category Image', content: cat.tempBase64 });
+                        cat.image = `./${path}`; delete cat.tempBase64; delete cat.tempExt;
+                    }
+                    if (cat.items) {
+                        for (let item of cat.items) {
+                            if (item.tempBase64) {
+                                const path = `images/img_${Date.now()}_${Math.floor(Math.random()*1000)}.${item.tempExt}`;
+                                await ghApi(path, 'PUT', { message: 'Upload Product Image', content: item.tempBase64 });
+                                item.image = `./${path}`; delete item.tempBase64; delete item.tempExt;
+                            }
+                        }
+                    }
+                }
+
+                // 3. رفع ملف البيانات الشامل
+                const content = utoa(JSON.stringify(menuData, null, 2));
+                await ghApi('menu.json', 'PUT', { message: "Bulk update from Admin", content, sha: liveSha });
+                
+                markSaved();
+                alert("تم رفع جميع التعديلات والصور إلى موقعك بنجاح! 🎉");
+            } catch (e) {
+                console.error(e);
+                alert("حدث خطأ أثناء الرفع! تأكد من اتصالك بالإنترنت وحاول مجدداً.");
+            }
             hideLoader();
         }
     </script>
