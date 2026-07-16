@@ -15,22 +15,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text-dark); padding-bottom: 90px; overflow-x: hidden; }
 
-        /* شاشة التحميل */
         .loader-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; font-weight: 900; color: var(--primary); font-size: 1.2rem; display: none; backdrop-filter: blur(5px); }
         .spinner { width: 45px; height: 45px; border: 5px solid var(--primary-light); border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* شاشة الدخول */
         #loginScreen { position: fixed; inset: 0; background: var(--surface); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         .login-box { width: 100%; max-width: 400px; }
         .login-box input { width: 100%; padding: 18px; border-radius: var(--radius-md); border: 2px solid #eee; font-size: 1rem; text-align: left; direction: ltr; margin: 20px 0; outline: none; }
-        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 16px; border: none; border-radius: var(--radius-md); font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 8px 20px rgba(12, 161, 67, 0.2); }
+        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 16px; border: none; border-radius: var(--radius-md); font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 8px 20px rgba(12, 161, 67, 0.2); transition: var(--transition); }
+        .btn-primary:active { transform: scale(0.95); }
         
-        /* زر الحفظ الشامل العائم (يظهر عند وجود تعديلات) */
         .save-all-banner { position: fixed; top: 15px; left: 15px; right: 15px; background: var(--text-dark); color: #fff; padding: 16px; border-radius: 20px; font-weight: 900; font-size: 1.1rem; text-align: center; cursor: pointer; z-index: 900; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateY(-150%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; justify-content: center; align-items: center; gap: 10px; border: 2px solid #333; }
         .save-all-banner.visible { transform: translateY(0); }
 
-        /* الهيدر والقوائم */
         .app-header { background: var(--surface); padding: 25px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); position: sticky; top: 0; z-index: 100; border-bottom-left-radius: var(--radius-lg); border-bottom-right-radius: var(--radius-lg); }
         .app-header h1 { font-weight: 900; font-size: 1.5rem; color: var(--text-dark); margin: 0; }
         
@@ -42,7 +39,6 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* الكروت وأزرار التحكم */
         .card { background: var(--surface); padding: 12px; border-radius: var(--radius-lg); box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 15px; display: flex; gap: 12px; align-items: center; border: 1px solid rgba(0,0,0,0.02); }
         .card img { width: 75px; height: 75px; border-radius: 16px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
         .card-info { flex-grow: 1; min-width: 0; }
@@ -52,14 +48,15 @@
         
         .actions-group { display: flex; flex-direction: column; gap: 6px; }
         .actions-row { display: flex; gap: 6px; justify-content: flex-end; }
-        .action-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .action-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 10px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+        .action-btn:active { transform: scale(0.9); }
         .action-btn.delete { color: var(--danger); background: #fee2e2; }
         .action-btn.edit { color: var(--info); background: #e0f2fe; }
         .action-btn.move { color: var(--text-dark); background: #f3f4f6; }
 
-        .fab { position: fixed; bottom: 100px; right: 20px; background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 22px; font-size: 2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(12, 161, 67, 0.4); border: none; z-index: 99; cursor: pointer; }
+        .fab { position: fixed; bottom: 100px; right: 20px; background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 22px; font-size: 2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 25px rgba(12, 161, 67, 0.4); border: none; z-index: 99; cursor: pointer; transition: var(--transition); }
+        .fab:active { transform: scale(0.9); }
 
-        /* النوافذ السفلية (Sheets) */
         .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .sheet-overlay.active { opacity: 1; pointer-events: all; }
         .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-radius: 35px 35px 0 0; padding: 25px 20px 40px 20px; z-index: 1000; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 -15px 40px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
@@ -69,19 +66,23 @@
         .close-sheet { background: var(--bg); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; }
 
         .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-weight: 800; font-size: 0.95rem; margin-bottom: 8px; }
-        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 16px; border-radius: var(--radius-md); border: 2px solid #eee; font-family: 'Tajawal'; font-size: 1rem; font-weight: 700; outline: none; background: var(--bg); }
+        .input-group label { display: block; font-weight: 800; font-size: 0.95rem; margin-bottom: 8px; color: var(--text-dark); }
+        .input-group input, .input-group textarea, .input-group select { width: 100%; padding: 16px; border-radius: var(--radius-md); border: 2px solid #eee; font-family: 'Tajawal'; font-size: 1rem; font-weight: 700; outline: none; background: var(--bg); transition: var(--transition); }
+        .input-group input:focus, .input-group textarea:focus { border-color: var(--primary); background: var(--surface); }
         
-        .image-upload-box { background: var(--bg); border: 2px dashed #cbd5e1; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; position: relative; margin-bottom: 20px; }
+        .image-upload-box { background: var(--bg); border: 2px dashed #cbd5e1; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; position: relative; margin-bottom: 20px; cursor: pointer; transition: var(--transition); }
+        .image-upload-box:active { background: #e2e8f0; }
         .image-upload-box input[type="file"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
         .image-upload-box img { max-width: 100%; max-height: 200px; border-radius: 12px; margin-top: 15px; display: none; object-fit: contain; }
+        
+        .section-title { font-weight: 900; font-size: 1.2rem; color: var(--primary); margin: 25px 0 15px 0; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
 
-    <!-- زر الحفظ الشامل (يظهر فقط عند إجراء أي تعديل) -->
+    <!-- شريط الحفظ الشامل -->
     <div id="saveAllBanner" class="save-all-banner" onclick="saveAllChanges()">
-        <span>💾</span> حفظ جميع التعديلات
+        <span>💾</span> حفظ جميع التعديلات في الموقع
     </div>
 
     <div class="loader-overlay" id="loader">
@@ -101,14 +102,45 @@
         <h1 id="headerTitle">المنتجات 🍔</h1>
     </div>
 
+    <!-- 1. واجهة المنتجات -->
     <div id="view-products" class="view active">
         <div id="productsList"></div>
         <button class="fab" onclick="openProductSheet()">+</button>
     </div>
 
+    <!-- 2. واجهة الأقسام -->
     <div id="view-categories" class="view">
         <div id="categoriesList"></div>
         <button class="fab" onclick="openCategorySheet()">+</button>
+    </div>
+
+    <!-- 3. واجهة الإعدادات (تم إعادتها كاملةً) -->
+    <div id="view-settings" class="view">
+        <div class="card" style="flex-direction: column; align-items: stretch; gap: 0;">
+            <div class="section-title">✨ الهوية والأرقام</div>
+            
+            <label style="font-weight:800; margin-bottom:10px; display:block;">شعار المطعم (اللوغو)</label>
+            <div class="image-upload-box">
+                <input type="file" accept="image/*" onchange="previewSettingImage(event)">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">📸</div>
+                <div style="font-weight:800;">تغيير الشعار</div>
+                <img id="sLogoPreview" src="">
+            </div>
+
+            <div class="input-group"><label>اسم المطعم</label><input type="text" id="sName" oninput="updateSetting('store_name', this.value)"></div>
+            <div class="input-group"><label>الوصف أسفل الاسم</label><input type="text" id="sDesc" oninput="updateSetting('store_desc', this.value)"></div>
+            <div class="input-group"><label>رقم الواتساب (بدون +)</label><input type="text" id="sWhatsApp" oninput="updateSetting('whatsapp_number', this.value)"></div>
+            <div class="input-group"><label>رسالة الواتساب التلقائية</label><textarea id="sMsg" rows="2" oninput="updateSetting('whatsapp_template', this.value)"></textarea></div>
+            <div class="input-group"><label>العملة</label><input type="text" id="sCurrency" oninput="updateSetting('currency', this.value)"></div>
+
+            <div class="section-title">✍️ نصوص الواجهة (المنيو)</div>
+            <div class="input-group"><label>الجملة الترحيبية (أعلى الأقسام)</label><input type="text" id="sUiGreeting" oninput="updateSetting('ui_greeting', this.value)"></div>
+            <div class="input-group"><label>كلمة (زر الرجوع)</label><input type="text" id="sUiBack" oninput="updateSetting('ui_back', this.value)"></div>
+            <div class="input-group"><label>كلمة (السلة) في الزر العائم</label><input type="text" id="sUiCartWord" oninput="updateSetting('ui_cart_word', this.value)"></div>
+            <div class="input-group"><label>عنوان نافذة السلة</label><input type="text" id="sUiCartTitle" oninput="updateSetting('ui_cart_title', this.value)"></div>
+            <div class="input-group"><label>زر (إضافة للسلة)</label><input type="text" id="sUiAddBtn" oninput="updateSetting('ui_add_btn', this.value)"></div>
+            <div class="input-group"><label>زر (إتمام الطلب)</label><input type="text" id="sUiCheckoutBtn" oninput="updateSetting('ui_checkout_btn', this.value)"></div>
+        </div>
     </div>
 
     <!-- شريط التنقل -->
@@ -118,6 +150,9 @@
         </div>
         <div class="nav-item" onclick="switchTab('categories', 'الأقسام 🗂️', this)">
             <span class="nav-icon">🗂️</span><span>الأقسام</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings', 'الإعدادات ⚙️', this)">
+            <span class="nav-icon">⚙️</span><span>الإعدادات</span>
         </div>
     </div>
 
@@ -162,14 +197,17 @@
         const REPO = 'majdmereee/menu-test';
         let PAT = localStorage.getItem('gh_pat');
         let menuData = { categories: [] };
+        let appSettings = {};
         
         let hasUnsavedChanges = false;
-        let currentEditMode = null; 
         let editId = null;
         let editOldCatId = null; 
         let currentImgPath = null; 
-        let tempUploads = { product: null, category: null };
+        
+        // ذاكرة الصور المؤقتة
+        let tempUploads = { product: null, category: null, settings: null };
 
+        // دوال التشفير العربية
         function utoa(str) { return btoa(unescape(encodeURIComponent(str))); }
         function atou(str) { return decodeURIComponent(escape(atob(str))); }
 
@@ -177,7 +215,7 @@
 
         async function initApp() {
             const token = document.getElementById('ghToken').value.trim();
-            if(!token) return alert("أدخل الرمز");
+            if(!token) return alert("أدخل الرمز من فضلك");
             PAT = token; localStorage.setItem('gh_pat', PAT);
             document.getElementById('loginScreen').style.display = 'none';
             await loadData();
@@ -186,44 +224,65 @@
         function showLoader(text) { document.getElementById('loaderText').innerText = text; document.getElementById('loader').style.display = 'flex'; }
         function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
-        // إظهار زر "حفظ جميع التعديلات"
         function markUnsaved() {
             hasUnsavedChanges = true;
             document.getElementById('saveAllBanner').classList.add('visible');
         }
 
-        // إخفاء زر الحفظ
         function markSaved() {
             hasUnsavedChanges = false;
             document.getElementById('saveAllBanner').classList.remove('visible');
         }
 
-        // دالة للتعامل مع مسار الصور (محلي مؤقت أو من جيت هب)
         function getImgSrc(imgStr) {
             if(!imgStr) return 'https://via.placeholder.com/70';
-            if(imgStr.startsWith('data:image')) return imgStr; // صورة محلية مؤقتة لم ترفع بعد
-            return `../${imgStr.replace('./', '')}`; // صورة مرفوعة مسبقاً
+            if(imgStr.startsWith('data:image')) return imgStr;
+            return `../${imgStr.replace('./', '')}`;
         }
 
+        // --- دالة الاتصال المحسنة (بدون كاش لمعالجة الأخطاء والتعليق) ---
         async function ghApi(path, method = 'GET', body = null) {
-            const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-                method, headers: { 'Authorization': `token ${PAT}`, 'Content-Type': 'application/json' },
-                body: body ? JSON.stringify(body) : null
-            });
+            const options = {
+                method,
+                headers: { 'Authorization': `Bearer ${PAT}`, 'Content-Type': 'application/json' },
+                cache: 'no-store' // يمنع الكاش الذي يسبب المشكلة
+            };
+            if(body) options.body = JSON.stringify(body);
+            
+            // إضافة timestamp لإجبار جيت هب على جلب النسخة الأحدث
+            const timestamp = new Date().getTime();
+            const fetchUrl = method === 'GET' ? `https://api.github.com/repos/${REPO}/contents/${path}?t=${timestamp}` : `https://api.github.com/repos/${REPO}/contents/${path}`;
+
+            const res = await fetch(fetchUrl, options);
             if (!res.ok) {
-                if(res.status === 401) { localStorage.removeItem('gh_pat'); location.reload(); }
-                throw new Error("API Error");
+                let errText = "خطأ غير معروف";
+                try {
+                    const errObj = await res.json();
+                    errText = errObj.message;
+                } catch(e) { errText = await res.text(); }
+                
+                if (res.status === 401 || res.status === 404) {
+                    alert("المفتاح السري غير صحيح أو لا يملك صلاحية (repo). يرجى التأكد منه!");
+                    localStorage.removeItem('gh_pat'); location.reload();
+                }
+                throw new Error(errText);
             }
             return res.json();
         }
 
         async function loadData() {
-            showLoader("جاري تحميل البيانات...");
+            showLoader("جاري تحميل مطعمك...");
             try {
+                const sData = await ghApi('settings.json');
+                appSettings = JSON.parse(atou(sData.content));
+                populateSettingsUI();
+
                 const mData = await ghApi('menu.json');
                 menuData = JSON.parse(atou(mData.content));
                 renderCategories(); renderProducts();
-            } catch (e) { alert("حدث خطأ."); }
+            } catch (e) {
+                alert("حدث خطأ أثناء جلب البيانات:\n" + e.message);
+            }
             hideLoader();
         }
 
@@ -241,6 +300,41 @@
             document.getElementById('sheetOverlay').classList.remove('active');
         }
 
+        // ================= الإعدادات اللحظية =================
+        function populateSettingsUI() {
+            const ids = ['sName', 'sDesc', 'sWhatsApp', 'sMsg', 'sCurrency', 'sUiGreeting', 'sUiBack', 'sUiCartWord', 'sUiCartTitle', 'sUiAddBtn', 'sUiCheckoutBtn'];
+            const keys = ['store_name', 'store_desc', 'whatsapp_number', 'whatsapp_template', 'currency', 'ui_greeting', 'ui_back', 'ui_cart_word', 'ui_cart_title', 'ui_add_btn', 'ui_checkout_btn'];
+            
+            for(let i=0; i<ids.length; i++){
+                if(document.getElementById(ids[i])) document.getElementById(ids[i]).value = appSettings[keys[i]] || '';
+            }
+            if(appSettings.logo) {
+                document.getElementById('sLogoPreview').src = getImgSrc(appSettings.logo);
+                document.getElementById('sLogoPreview').style.display = 'inline-block';
+            }
+        }
+
+        function updateSetting(key, value) {
+            appSettings[key] = value;
+            markUnsaved();
+        }
+
+        function previewSettingImage(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('sLogoPreview').src = e.target.result; 
+                document.getElementById('sLogoPreview').style.display = 'inline-block';
+                const base64 = e.target.result.split(',')[1];
+                const ext = file.name.split('.').pop();
+                tempUploads.settings = { base64, ext, fullData: e.target.result };
+                appSettings.logo = e.target.result; // تحديث محلي للعرض
+                markUnsaved();
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // ================= الأقسام =================
         function previewImage(event, previewId) {
             const file = event.target.files[0]; if (!file) return;
             const reader = new FileReader();
@@ -250,14 +344,12 @@
                 const base64 = e.target.result.split(',')[1];
                 const ext = file.name.split('.').pop();
                 
-                // حفظ البيانات المؤقتة بدلاً من رفعها فوراً
                 if(previewId === 'pPreview') tempUploads.product = { base64, ext, fullData: e.target.result };
                 else if (previewId === 'cPreview') tempUploads.category = { base64, ext, fullData: e.target.result };
             }
             reader.readAsDataURL(file);
         }
 
-        // ================= الأقسام (تعديل محلي فقط) =================
         function renderCategories() {
             const list = document.getElementById('categoriesList'); list.innerHTML = '';
             menuData.categories.forEach((cat, index) => {
@@ -301,10 +393,9 @@
 
         function applyCategoryChange() {
             const name = document.getElementById('cName').value;
-            if(!name || (!tempUploads.category && !editId)) return alert("الاسم والصورة مطلوبان!");
+            if(!name || (!tempUploads.category && !editId && !currentImgPath)) return alert("الاسم والصورة مطلوبان!");
             
-            let imgPath = currentImgPath;
-            if(tempUploads.category) { imgPath = tempUploads.category.fullData; } // نحفظ الصورة كـ Data URL محلياً
+            let imgPath = tempUploads.category ? tempUploads.category.fullData : currentImgPath;
             
             if(editId) {
                 const cat = menuData.categories.find(c => c.id === editId);
@@ -332,7 +423,7 @@
             markUnsaved(); renderCategories(); renderProducts();
         }
 
-        // ================= المنتجات (تعديل محلي فقط) =================
+        // ================= المنتجات =================
         function renderProducts() {
             const list = document.getElementById('productsList'); list.innerHTML = '';
             menuData.categories.forEach(cat => {
@@ -368,6 +459,10 @@
             const catSelect = document.getElementById('pCategory');
             catSelect.innerHTML = menuData.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
             
+            if(menuData.categories.length === 0) {
+                alert("يرجى إضافة قسم أولاً قبل إضافة منتج!"); return;
+            }
+
             const imgPreview = document.getElementById('pPreview');
 
             if(itemId) {
@@ -392,10 +487,9 @@
             const price = document.getElementById('pPrice').value;
             const newCatId = document.getElementById('pCategory').value;
 
-            if(!name || !price || (!tempUploads.product && !editId)) return alert("الاسم، السعر والصورة مطلوبان!");
+            if(!name || !price || (!tempUploads.product && !editId && !currentImgPath)) return alert("الاسم، السعر والصورة مطلوبان!");
             
-            let imgPath = currentImgPath;
-            if(tempUploads.product) { imgPath = tempUploads.product.fullData; }
+            let imgPath = tempUploads.product ? tempUploads.product.fullData : currentImgPath;
             
             let itemObj;
             if(editId) {
@@ -433,41 +527,51 @@
             markUnsaved(); renderProducts(); renderCategories();
         }
 
-        // ================= نظام الحفظ الشامل (Bulk Save) =================
+        // ================= نظام الحفظ النهائي الشامل (Bulk Save) =================
         async function saveAllChanges() {
-            showLoader("جاري رفع الصور وحفظ كافة التعديلات للموقع... ⏳");
+            showLoader("جاري مزامنة الإبداع مع الموقع... ⏳");
             try {
-                // 1. جلب أحدث SHA لتجنب أخطاء التزامن من جيت هب (حل مشكلة الـ 25 ثانية)
-                const latestMenu = await ghApi('menu.json');
-                let liveSha = latestMenu.sha;
+                // 1. رفع صورة اللوغو إن وجدت
+                if (tempUploads.settings) {
+                    const path = `images/logo_${Date.now()}.${tempUploads.settings.ext}`;
+                    await ghApi(path, 'PUT', { message: 'Update Logo', content: tempUploads.settings.base64 });
+                    appSettings.logo = `./${path}`;
+                    tempUploads.settings = null;
+                }
 
-                // 2. رفع الصور الجديدة فقط (الموجودة كبيانات مؤقتة)
+                // 2. رفع صور الأقسام والمنتجات
                 for (let cat of menuData.categories) {
                     if (cat.tempBase64) {
-                        const path = `images/img_${Date.now()}_${Math.floor(Math.random()*1000)}.${cat.tempExt}`;
+                        const path = `images/cat_${Date.now()}_${Math.floor(Math.random()*1000)}.${cat.tempExt}`;
                         await ghApi(path, 'PUT', { message: 'Upload Category Image', content: cat.tempBase64 });
-                        cat.image = `./${path}`; delete cat.tempBase64; delete cat.tempExt;
+                        cat.image = `./${path}`; delete cat.tempBase64; delete cat.tempExt; delete cat.fullData;
                     }
                     if (cat.items) {
                         for (let item of cat.items) {
                             if (item.tempBase64) {
-                                const path = `images/img_${Date.now()}_${Math.floor(Math.random()*1000)}.${item.tempExt}`;
+                                const path = `images/prod_${Date.now()}_${Math.floor(Math.random()*1000)}.${item.tempExt}`;
                                 await ghApi(path, 'PUT', { message: 'Upload Product Image', content: item.tempBase64 });
-                                item.image = `./${path}`; delete item.tempBase64; delete item.tempExt;
+                                item.image = `./${path}`; delete item.tempBase64; delete item.tempExt; delete item.fullData;
                             }
                         }
                     }
                 }
 
-                // 3. رفع ملف البيانات الشامل
-                const content = utoa(JSON.stringify(menuData, null, 2));
-                await ghApi('menu.json', 'PUT', { message: "Bulk update from Admin", content, sha: liveSha });
+                // 3. حفظ الإعدادات الشاملة (نجلب الـ SHA الجديد ثم نحفظ لنتجنب التعارض)
+                const liveSettings = await ghApi('settings.json');
+                const sContent = utoa(JSON.stringify(appSettings, null, 2));
+                await ghApi('settings.json', 'PUT', { message: "Update Admin Settings", content: sContent, sha: liveSettings.sha });
+
+                // 4. حفظ المنيو الشامل (نجلب الـ SHA الجديد ثم نحفظ لنتجنب التعارض)
+                const liveMenu = await ghApi('menu.json');
+                const mContent = utoa(JSON.stringify(menuData, null, 2));
+                await ghApi('menu.json', 'PUT', { message: "Bulk Menu Update", content: mContent, sha: liveMenu.sha });
                 
                 markSaved();
-                alert("تم رفع جميع التعديلات والصور إلى موقعك بنجاح! 🎉");
+                alert("تم رفع جميع التعديلات بنجاح! موقعك الآن محدث بالكامل 🎉");
             } catch (e) {
                 console.error(e);
-                alert("حدث خطأ أثناء الرفع! تأكد من اتصالك بالإنترنت وحاول مجدداً.");
+                alert("فشل الرفع للسيرفر ❌\nالسبب: " + e.message);
             }
             hideLoader();
         }
