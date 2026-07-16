@@ -1,77 +1,234 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>لوحة تحكم | Garden Food</title>
-  <link rel="icon" type="image/jpeg" href="/images/PhotoRoom-20260715_012445.jpg">
-  
-  <!-- استدعاء خط تجوال -->
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
-  
-  <style>
-    /* فرض الخط على كل النظام */
-    * { font-family: 'Tajawal', sans-serif !important; }
-    
-    body { background-color: #f4f7f6 !important; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>إدارة المطعم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #3f9d98; --bg: #f5f8f8; --white: #fff; --text: #333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 50px; }
+        
+        /* شاشة الدخول للمفتاح السري */
+        #loginScreen { position: fixed; inset: 0; background: var(--primary); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; z-index: 10000; color: white; text-align: center; }
+        .login-box { background: white; color: var(--text); padding: 30px; border-radius: 20px; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .login-box input { width: 100%; padding: 15px; margin: 15px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 14px; text-align: left; direction: ltr; }
+        .login-box button { width: 100%; background: var(--primary); color: white; padding: 15px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-    /* 📱 تحسينات جذرية لشاشات الموبايل 📱 */
-    @media (max-width: 768px) {
-      
-      /* تكبير الحقول ومنع الزوم التلقائي المزعج */
-      input, textarea, select {
-        font-size: 16px !important; 
-        padding: 14px !important;
-        border-radius: 12px !important;
-        border: 1px solid #ddd !important;
-      }
+        /* الهيدر العلوي */
+        .header { background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .header h2 { color: var(--primary); font-size: 1.2rem; }
+        .save-btn { background: var(--primary); color: white; padding: 8px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .close-btn { font-size: 1.5rem; color: #888; background: none; border: none; cursor: pointer; }
 
-      /* تحسين الأزرار لتناسب حجم الإصبع */
-      button {
-        min-height: 48px !important; 
-        border-radius: 12px !important;
-        font-weight: bold !important;
-      }
+        /* القسم العلوي الملون مثل الصورة */
+        .top-section { background: var(--primary); padding: 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 20px; }
+        .input-group { background: white; border-radius: 12px; display: flex; align-items: center; padding: 5px 15px; margin-bottom: 12px; }
+        .input-group input, .input-group select { border: none; outline: none; width: 100%; padding: 12px 5px; font-size: 15px; font-weight: bold; color: var(--text); background: transparent; }
+        .input-group span { color: #888; font-size: 14px; font-weight: bold; white-space: nowrap; }
+        
+        /* قسم رفع الصورة */
+        .image-upload-card { background: white; margin: 20px; padding: 30px 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px dashed #ccc; position: relative; cursor: pointer; }
+        .image-upload-card input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+        .image-upload-card img { max-width: 100%; max-height: 200px; border-radius: 12px; margin-top: 15px; display: none; }
+        .upload-icon { font-size: 2.5rem; color: #a0b8b8; margin-bottom: 10px; }
+        .upload-title { font-weight: bold; font-size: 1.1rem; color: #444; }
+        .upload-desc { font-size: 0.85rem; color: #888; margin-top: 5px; }
 
-      /* تحسين شكل القوائم والأصناف لتصبح كروت تفاعلية */
-      a[href^="#/collections/"] {
-        background-color: white !important;
-        padding: 18px !important;
-        margin-bottom: 12px !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
-        display: block !important;
-      }
+        /* الشاشة الرئيسية (لائحة المنتجات) */
+        #dashboardScreen { display: none; padding: 20px; }
+        .product-card { background: white; padding: 15px; border-radius: 16px; display: flex; gap: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); align-items: center; }
+        .product-card img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
+        .product-info { flex-grow: 1; }
+        .product-info h4 { margin-bottom: 5px; }
+        .product-info p { color: var(--primary); font-weight: bold; }
+        .add-new-btn { background: var(--primary); color: white; width: 100%; padding: 15px; border-radius: 12px; font-weight: bold; font-size: 1.1rem; border: none; margin-bottom: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(63, 157, 152, 0.4); }
 
-      /* إصلاح نافذة رفع الصور لتملأ الشاشة وتصبح واضحة */
-      div[role="dialog"] {
-        width: 95vw !important;
-        height: 90vh !important;
-        max-width: none !important;
-        max-height: none !important;
-        margin: 5vh auto !important;
-        border-radius: 20px !important;
-        overflow: hidden !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
-      }
-
-      /* تكبير زر الرجوع والحفظ في شاشة التعديل */
-      .nc-appHeader-container {
-        padding: 10px !important;
-      }
-      
-      /* تباعد أفضل بين الحقول عند إضافة صنف جديد */
-      .nc-controlPane-widget {
-        margin-bottom: 25px !important;
-        background: white !important;
-        padding: 15px !important;
-        border-radius: 12px !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
-      }
-    }
-  </style>
+        #addProductScreen { display: none; }
+        .loader { position: fixed; inset: 0; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 9999; font-weight: bold; color: var(--primary); display: none; }
+    </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
+
+    <div class="loader" id="loader">جاري المعالجة... ⏳</div>
+
+    <!-- شاشة تسجيل الدخول للمفتاح -->
+    <div id="loginScreen">
+        <h2>لوحة إدارة المطعم 👨‍🍳</h2>
+        <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">مرحباً بك! أدخل مفتاح جيت هب للبدء</p>
+        <div class="login-box">
+            <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxx">
+            <button onclick="saveTokenAndInit()">دخول للوحة</button>
+        </div>
+    </div>
+
+    <!-- شاشة إدارة المنتجات (الرئيسية) -->
+    <div id="dashboardScreen">
+        <button class="add-new-btn" onclick="openAddScreen()">+ منتج جديد</button>
+        <div id="productsList"></div>
+    </div>
+
+    <!-- شاشة إضافة منتج (مطابقة لصورة المستخدم) -->
+    <div id="addProductScreen">
+        <div class="header">
+            <button class="close-btn" onclick="closeAddScreen()">✕</button>
+            <h2>منتج جديد</h2>
+            <button class="save-btn" onclick="saveProduct()">حفظ 💾</button>
+        </div>
+
+        <div class="top-section">
+            <div class="input-group">
+                <input type="text" id="pName" placeholder="اسم المنتج">
+                <span>📦</span>
+            </div>
+            <div class="input-group">
+                <input type="number" id="pPrice" placeholder="سعر المنتج">
+                <span>ل.س</span>
+            </div>
+            <div class="input-group">
+                <select id="pCategory"></select>
+                <span>🗂️</span>
+            </div>
+        </div>
+
+        <div class="image-upload-card" id="uploadCard">
+            <input type="file" id="pImage" accept="image/*" onchange="previewImage(event)">
+            <div class="upload-icon">📸</div>
+            <div class="upload-title">إضافة صورة المنتج</div>
+            <div class="upload-desc">(ينصح ألا يقل حجم الصورة عن 500x500)</div>
+            <img id="imgPreview" src="">
+        </div>
+    </div>
+
+    <script>
+        const REPO = 'majdmereee/menu-test';
+        let PAT = localStorage.getItem('gh_pat');
+        let menuData = null;
+        let menuSha = null;
+        let base64ImageToUpload = null;
+        let imageExtension = '';
+
+        // دوال التشفير للغة العربية لتجنب الأخطاء
+        function b64EncodeUnicode(str) { return btoa(unescape(encodeURIComponent(str))); }
+        function b64DecodeUnicode(str) { return decodeURIComponent(escape(atob(str))); }
+
+        // التحقق من الدخول
+        if (PAT) { document.getElementById('loginScreen').style.display = 'none'; fetchMenu(); }
+
+        function saveTokenAndInit() {
+            const t = document.getElementById('ghToken').value.trim();
+            if(!t) return alert("الرجاء إدخال الرمز!");
+            localStorage.setItem('gh_pat', t); PAT = t;
+            document.getElementById('loginScreen').style.display = 'none'; fetchMenu();
+        }
+
+        async function ghApi(path, method = 'GET', body = null) {
+            const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+                method, headers: { 'Authorization': `token ${PAT}`, 'Content-Type': 'application/json' },
+                body: body ? JSON.stringify(body) : null
+            });
+            if (!res.ok) {
+                if(res.status === 401) { localStorage.removeItem('gh_pat'); location.reload(); }
+                throw new Error(await res.text());
+            }
+            return res.json();
+        }
+
+        async function fetchMenu() {
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                const data = await ghApi('menu.json');
+                menuSha = data.sha;
+                menuData = JSON.parse(b64DecodeUnicode(data.content));
+                renderDashboard();
+            } catch (e) { alert("حدث خطأ في جلب البيانات! تأكد من الرمز واسم المستودع."); }
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        function renderDashboard() {
+            document.getElementById('dashboardScreen').style.display = 'block';
+            const list = document.getElementById('productsList');
+            list.innerHTML = '';
+            const cats = document.getElementById('pCategory');
+            cats.innerHTML = '';
+
+            menuData.categories.forEach(cat => {
+                cats.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                cat.items.forEach(item => {
+                    list.innerHTML += `
+                        <div class="product-card">
+                            <img src="../${item.image.replace('./', '')}" onerror="this.src='https://via.placeholder.com/60'">
+                            <div class="product-info">
+                                <h4>${item.name}</h4>
+                                <p>${item.price}</p>
+                            </div>
+                        </div>`;
+                });
+            });
+        }
+
+        function openAddScreen() {
+            document.getElementById('dashboardScreen').style.display = 'none';
+            document.getElementById('addProductScreen').style.display = 'block';
+            document.getElementById('pName').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('imgPreview').style.display = 'none';
+            document.getElementById('imgPreview').src = '';
+            base64ImageToUpload = null;
+        }
+
+        function closeAddScreen() {
+            document.getElementById('addProductScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            imageExtension = file.name.split('.').pop();
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imgPreview').src = e.target.result;
+                document.getElementById('imgPreview').style.display = 'block';
+                // فصل البيانات لاستخراج كود الـ Base64 الصافي
+                base64ImageToUpload = e.target.result.split(',')[1];
+            }
+            reader.readAsDataURL(file);
+        }
+
+        async function saveProduct() {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const catId = document.getElementById('pCategory').value;
+
+            if(!name || !price || !base64ImageToUpload) return alert("الرجاء تعبئة الاسم والسعر واختيار صورة!");
+
+            document.getElementById('loader').style.display = 'flex';
+            try {
+                // 1. رفع الصورة أولاً
+                const imgFileName = `img_${Date.now()}.${imageExtension}`;
+                const imgPath = `images/${imgFileName}`;
+                await ghApi(imgPath, 'PUT', { message: `Upload ${imgFileName}`, content: base64ImageToUpload });
+
+                // 2. تحديث قائمة المنيو
+                const newItem = { id: `i_${Date.now()}`, name: name, price: price, description: "", image: `./${imgPath}` };
+                const catIndex = menuData.categories.findIndex(c => c.id === catId);
+                menuData.categories[catIndex].items.push(newItem);
+
+                // 3. حفظ ملف المنيو المحدث
+                const updatedContent = b64EncodeUnicode(JSON.stringify(menuData, null, 2));
+                const newMenuRes = await ghApi('menu.json', 'PUT', { message: "Add new product", content: updatedContent, sha: menuSha });
+                
+                menuSha = newMenuRes.content.sha;
+                alert("تم إضافة المنتج بنجاح! 🎉");
+                renderDashboard();
+                closeAddScreen();
+            } catch (e) {
+                alert("حدث خطأ أثناء الحفظ!"); console.error(e);
+            }
+            document.getElementById('loader').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
