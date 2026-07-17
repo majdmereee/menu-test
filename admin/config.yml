@@ -26,7 +26,7 @@ collections:
           - { label: "رابط انستغرام", name: "instagram_url", widget: "string", required: false }
           - { label: "رقم الواتساب (بدون +)", name: "whatsapp_number", widget: "string" }
           - { label: "رسالة الواتساب", name: "whatsapp_template", widget: "text" }
-          - { label: "العملة", name: "currency", widget: "string" }
+          - { label: "العملة الافتراضية", name: "currency", widget: "string" }
           - { label: "الجملة الترحيبية (فوق الأقسام)", name: "ui_greeting", widget: "string", default: "ماذا تود أن تطلب؟ 😋" }
           - { label: "كلمة (زر الرجوع)", name: "ui_back", widget: "string", default: "رجوع" }
           - { label: "كلمة (السلة) في الزر العائم", name: "ui_cart_word", widget: "string", default: "السلة" }
@@ -56,5 +56,6 @@ collections:
                   - { label: "المعرف", name: "id", widget: "string" }
                   - { label: "اسم الصنف", name: "name", widget: "string" }
                   - { label: "السعر", name: "price", widget: "string" }
+                  - { label: "عملة الصنف", name: "currency", widget: "select", options: ["ل.س", "$"], default: "ل.س" }
                   - { label: "صورة الصنف الأصلية", name: "image", widget: "image" }
                   - { label: "صورة الصنف المصغرة", name: "thumb", widget: "image", required: false }
