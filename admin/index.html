@@ -118,7 +118,7 @@
             
             <div class="input-group"><label>رقم الواتساب (بدون +)</label><input type="text" id="sWhatsApp" oninput="updateSetting('whatsapp_number', this.value)"></div>
             <div class="input-group"><label>رسالة الواتساب التلقائية</label><textarea id="sMsg" rows="2" oninput="updateSetting('whatsapp_template', this.value)"></textarea></div>
-            <div class="input-group"><label>العملة</label><input type="text" id="sCurrency" oninput="updateSetting('currency', this.value)"></div>
+            <div class="input-group"><label>العملة الافتراضية للجميع</label><input type="text" id="sCurrency" oninput="updateSetting('currency', this.value)"></div>
         </div>
     </div>
 
@@ -134,7 +134,19 @@
         <div class="sheet-header"><h2 id="pSheetTitle">إضافة منتج</h2><button class="close-sheet" onclick="closeSheets()">✕</button></div>
         <div class="input-group"><label>اسم المنتج</label><input type="text" id="pName"></div>
         <div class="input-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
-        <div class="input-group"><label>السعر</label><input type="number" id="pPrice"></div>
+        
+        <!-- تعديل لتقسيم السعر والعملة -->
+        <div style="display: flex; gap: 10px;">
+            <div class="input-group" style="flex: 2;"><label>السعر</label><input type="number" id="pPrice"></div>
+            <div class="input-group" style="flex: 1;">
+                <label>العملة</label>
+                <select id="pCurrency">
+                    <option value="ل.س">ل.س</option>
+                    <option value="$">$</option>
+                </select>
+            </div>
+        </div>
+
         <div class="input-group"><label>القسم</label><select id="pCategory"></select></div>
         <div class="image-upload-box">
             <input type="file" id="pImage" accept="image/*" onchange="openCropper(event, 'product')">
@@ -155,7 +167,6 @@
         <button class="btn-primary" onclick="applyCategoryChange()">تأكيد وإضافة ✔️</button>
     </div>
 
-    <!-- نافذة قص الصورة المخصصة -->
     <div class="crop-modal" id="cropModal">
         <div class="crop-area"><img id="cropperImage" style="max-width: 100%;"></div>
         <div class="crop-actions">
@@ -255,14 +266,9 @@
 
         function confirmCrop() {
             if(!cropperInstance) return;
-            // 1. الصورة المصغرة المربعة للموقع (360x360)
             const thumbCanvas = cropperInstance.getCroppedCanvas({ width: 360, height: 360 });
             const thumbDataUrl = thumbCanvas.toDataURL('image/jpeg', 0.8);
-            
-            // 2. الصورة الأصلية مضغوطة بحجم منطقي لسرعة الفتح (max 600px)
-            const origCanvas = cropperInstance.getCroppedCanvas(); // get full canvas (but we want original ratio without crop? Actually user said crop is applied, but original is preserved. Let's just compress the original image directly from the img tag).
             const rawImg = document.getElementById('cropperImage');
-            
             const maxDimension = 600;
             let finalW = rawImg.naturalWidth, finalH = rawImg.naturalHeight;
             if(finalW > maxDimension || finalH > maxDimension) {
@@ -273,12 +279,7 @@
             tmpCanvas.getContext('2d').drawImage(rawImg, 0, 0, finalW, finalH);
             const origDataUrl = tmpCanvas.toDataURL('image/jpeg', 0.8);
 
-            const ext = 'jpg';
-            const uploadObj = {
-                thumbBase64: thumbDataUrl.split(',')[1],
-                origBase64: origDataUrl.split(',')[1],
-                thumbFull: thumbDataUrl, origFull: origDataUrl, ext
-            };
+            const uploadObj = { thumbBase64: thumbDataUrl.split(',')[1], origBase64: origDataUrl.split(',')[1], thumbFull: thumbDataUrl, origFull: origDataUrl, ext: 'jpg' };
 
             if(currentCropType === 'product') {
                 tempUploads.product = uploadObj;
@@ -290,20 +291,55 @@
             cancelCrop();
         }
 
+        // ================= ترتيب الأقسام والمنتجات (الأزرار العائدة) =================
+        function moveCategory(index, direction) {
+            const temp = menuData.categories[index];
+            menuData.categories[index] = menuData.categories[index + direction];
+            menuData.categories[index + direction] = temp;
+            markUnsaved(); renderCategories(); renderProducts(); // تحديث قائمة المنتجات لتعكس الترتيب
+        }
+
+        function moveProduct(catId, index, direction) {
+            const cat = menuData.categories.find(c => c.id === catId);
+            const temp = cat.items[index];
+            cat.items[index] = cat.items[index + direction];
+            cat.items[index + direction] = temp;
+            markUnsaved(); renderProducts();
+        }
+
         // ================= Categories & Products Rendering =================
         function renderCategories() {
             const list = document.getElementById('categoriesList'); list.innerHTML = '';
             menuData.categories.forEach((cat, index) => {
                 list.innerHTML += `<div class="card"><img src="${getImgSrc(cat.thumb || cat.image)}"><div class="card-info"><h3>${cat.name}</h3></div>
-                <div class="actions-group"><div class="actions-row"><button class="action-btn edit" onclick="openCategorySheet('${cat.id}')">✏️</button><button class="action-btn delete" onclick="deleteCategory('${cat.id}')">🗑️</button></div></div></div>`;
+                <div class="actions-group">
+                    <div class="actions-row">
+                        <button class="action-btn move" onclick="moveCategory(${index}, -1)" ${index===0?'disabled style="opacity:0.3"':''}>⬆️</button>
+                        <button class="action-btn move" onclick="moveCategory(${index}, 1)" ${index===menuData.categories.length-1?'disabled style="opacity:0.3"':''}>⬇️</button>
+                    </div>
+                    <div class="actions-row">
+                        <button class="action-btn edit" onclick="openCategorySheet('${cat.id}')">✏️</button>
+                        <button class="action-btn delete" onclick="deleteCategory('${cat.id}')">🗑️</button>
+                    </div>
+                </div></div>`;
             });
         }
         function renderProducts() {
             const list = document.getElementById('productsList'); list.innerHTML = '';
             menuData.categories.forEach(cat => {
                 (cat.items || []).forEach((item, index) => {
-                    list.innerHTML += `<div class="card"><img src="${getImgSrc(item.thumb || item.image)}"><div class="card-info"><h3>${item.name}</h3><p>${item.price}</p></div>
-                    <div class="actions-group"><div class="actions-row"><button class="action-btn edit" onclick="openProductSheet('${cat.id}', '${item.id}')">✏️</button><button class="action-btn delete" onclick="deleteItem('${cat.id}', '${item.id}')">🗑️</button></div></div></div>`;
+                    let cur = item.currency || appSettings.currency || '';
+                    list.innerHTML += `<div class="card"><img src="${getImgSrc(item.thumb || item.image)}"><div class="card-info"><h3>${item.name}</h3><p>${item.price} ${cur}</p></div>
+                    <div class="actions-group">
+                        <div class="actions-row">
+                            <button class="action-btn move" onclick="moveProduct('${cat.id}', ${index}, -1)" ${index===0?'disabled style="opacity:0.3"':''}>⬆️</button>
+                            <button class="action-btn move" onclick="moveProduct('${cat.id}', ${index}, 1)" ${index===cat.items.length-1?'disabled style="opacity:0.3"':''}>⬇️</button>
+                        </div>
+                        <div class="actions-row">
+                            <button class="action-btn edit" onclick="openProductSheet('${cat.id}', '${item.id}')">✏️</button>
+                            <button class="action-btn delete" onclick="deleteItem('${cat.id}', '${item.id}')">🗑️</button>
+                        </div>
+                    </div></div>`;
                 });
             });
         }
@@ -330,7 +366,7 @@
                 catObj.image = tempUploads.category.origFull; catObj.thumb = tempUploads.category.thumbFull;
             }
             if(!editId) menuData.categories.push(catObj);
-            markUnsaved(); renderCategories(); closeSheets();
+            markUnsaved(); renderCategories(); renderProducts(); closeSheets();
         }
 
         function openProductSheet(catId = null, itemId = null) {
@@ -340,16 +376,18 @@
                 const cat = menuData.categories.find(c => c.id === catId); const item = cat.items.find(i => i.id === itemId);
                 document.getElementById('pName').value = item.name; document.getElementById('pDesc').value = item.description || '';
                 document.getElementById('pPrice').value = item.price; document.getElementById('pCategory').value = catId;
+                document.getElementById('pCurrency').value = item.currency || appSettings.currency || 'ل.س';
                 document.getElementById('pPreview').src = getImgSrc(item.thumb || item.image); document.getElementById('pPreview').style.display = 'inline-block';
             } else {
                 document.getElementById('pName').value = ''; document.getElementById('pDesc').value = ''; document.getElementById('pPrice').value = '';
+                document.getElementById('pCurrency').value = appSettings.currency || 'ل.س';
                 document.getElementById('pPreview').style.display = 'none';
             }
             document.getElementById('sheetOverlay').classList.add('active'); document.getElementById('productSheet').classList.add('active');
         }
 
         function applyProductChange() {
-            const name = document.getElementById('pName').value, desc = document.getElementById('pDesc').value, price = document.getElementById('pPrice').value, newCatId = document.getElementById('pCategory').value;
+            const name = document.getElementById('pName').value, desc = document.getElementById('pDesc').value, price = document.getElementById('pPrice').value, currency = document.getElementById('pCurrency').value, newCatId = document.getElementById('pCategory').value;
             if(!name || !price) return alert("أكمل البيانات");
             let itemObj;
             if(editId) {
@@ -359,7 +397,7 @@
                 } else itemObj = menuData.categories.find(c => c.id === newCatId).items.find(i => i.id === editId);
             } else { itemObj = { id: `i_${Date.now()}` }; menuData.categories.find(c => c.id === newCatId).items.push(itemObj); }
 
-            itemObj.name = name; itemObj.description = desc; itemObj.price = price;
+            itemObj.name = name; itemObj.description = desc; itemObj.price = price; itemObj.currency = currency;
             if(tempUploads.product) {
                 itemObj.tempBase64Orig = tempUploads.product.origBase64; itemObj.tempBase64Thumb = tempUploads.product.thumbBase64; itemObj.tempExt = tempUploads.product.ext;
                 itemObj.image = tempUploads.product.origFull; itemObj.thumb = tempUploads.product.thumbFull;
