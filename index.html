@@ -100,7 +100,6 @@
         .social-btn { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; border-radius: 50%; background: #fff; box-shadow: var(--shadow-md); color: var(--primary); text-decoration: none; transition: var(--transition); border: 1px solid rgba(12, 161, 67, 0.1); }
         .social-btn svg { width: 24px; height: 24px; fill: currentColor; }
         
-        /* زر الواتساب المبسط */
         .whatsapp-float { position: fixed; bottom: 100px; left: 20px; width: 55px; height: 55px; background-color: #25d366; color: #FFF; border-radius: 50%; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); z-index: 997; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: var(--transition); }
         .whatsapp-float:active { transform: scale(0.9); }
         .whatsapp-float svg { width: 32px; height: 32px; fill: white; }
@@ -110,7 +109,9 @@
 
     <div id="splash-screen"><div class="spinner"></div><h2 style="color: white; font-weight: 900;">جاري التجهيز...</h2></div>
     <div id="toast-container"></div>
-    <div class="overlay" id="overlay" onclick="closeAllOverlays()"></div>
+    
+    <!-- إغلاق النوافذ عند الضغط في الخارج تم ربطه بدالة الإغلاق المخصصة -->
+    <div class="overlay" id="overlay" onclick="closeCartUI()"></div>
     <div class="modal-overlay" id="modalOverlay" onclick="closeProductModal()"></div>
 
     <div class="header-wrapper">
@@ -122,21 +123,20 @@
                     <span class="store-desc" id="siteDesc"></span>
                 </div>
             </div>
-            <button class="back-btn ripple" id="backBtn" onclick="renderCategories()">الرئيسية</button>
+            <!-- زر الرجوع هنا تم ربطه بـ history.back -->
+            <button class="back-btn ripple" id="backBtn" onclick="history.back()">الرئيسية</button>
         </div>
         <div class="search-container" id="searchContainer" style="display: none;">
             <input type="text" class="search-input" id="searchInput" placeholder="ابحث عن منتج..." onkeyup="filterItems()">
         </div>
     </div>
 
-    <!-- الوصف التسويقي يظهر هنا ويختفي عند النزول -->
     <div class="hero-banner" id="heroBanner"></div>
 
     <div class="kiosk-grid" id="mainContainer"></div>
 
     <div class="social-footer" id="socialFooter"></div>
 
-    <!-- زر واتساب بسيط -->
     <a href="#" class="whatsapp-float" id="waFloat" target="_blank" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-5.824 4.74-10.563 10.564-10.563 5.826 0 10.564 4.738 10.564 10.563 0 5.825-4.738 10.561-10.562 10.561z"/></svg>
     </a>
@@ -172,7 +172,7 @@
     <div class="cart-sheet" id="cartSheet">
         <div class="cart-header">
             <h3 id="uiCartTitle"></h3>
-            <button class="close-cart ripple" onclick="toggleCart()">✕</button>
+            <button class="close-cart ripple" onclick="closeCartUI()">✕</button>
         </div>
         <div class="empty-cart-msg" id="emptyCartMsg">السلة فارغة حالياً</div>
         <div class="cart-items-container" id="cartItemsList"></div>
@@ -191,6 +191,25 @@
             document.getElementById('toast-container').appendChild(t); setTimeout(() => t.remove(), 3500);
         }
 
+        // ================== نظام التوجيه وزر الرجوع (Routing & History API) ==================
+        window.addEventListener('popstate', (e) => {
+            const state = e.state;
+            
+            // 1. إغلاق أي نوافذ منبثقة أو سلة بشكل إجباري عند ضغط زر الرجوع في الهاتف
+            document.getElementById('productModal').classList.remove('active');
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.getElementById('cartSheet').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+
+            // 2. توجيه المستخدم حسب السجل (للأقسام أو للمنتجات)
+            if (!state || state.view === 'home') {
+                renderCategories(true); // true تعني لا تقم بدفع حالة جديدة للسجل
+            } else if (state.view === 'category') {
+                renderItems(state.id, true);
+            }
+        });
+        // ===================================================================================
+
         async function initApp() {
             try {
                 const [setRes, menuRes] = await Promise.all([fetch('./settings.json?v=' + Date.now()), fetch('./menu.json?v=' + Date.now())]);
@@ -207,7 +226,6 @@
 
             if(appSettings.hero_subtitle) { 
                 document.getElementById('heroBanner').innerText = appSettings.hero_subtitle; 
-                document.getElementById('heroBanner').style.display = 'block'; 
             }
             
             let socialHTML = "";
@@ -222,10 +240,14 @@
             }
 
             setTimeout(() => { const sp = document.getElementById('splash-screen'); sp.style.opacity = '0'; setTimeout(() => sp.style.display = 'none', 600); }, 600);
-            renderCategories();
+            
+            // تهيئة السجل في البداية ليكون في صفحة الأقسام
+            history.replaceState({ view: 'home' }, '', window.location.pathname);
+            renderCategories(true);
         }
 
-        function renderCategories() {
+        // تم إضافة isHistoryPop لمنع تسجيل السجل مرتين عند الرجوع
+        function renderCategories(isHistoryPop = false) {
             document.getElementById('searchContainer').style.display = 'none';
             if(appSettings.hero_subtitle) document.getElementById('heroBanner').style.display = 'block';
             const c = document.getElementById('mainContainer'); document.getElementById('backBtn').style.display = 'none';
@@ -234,15 +256,19 @@
                 c.innerHTML += `<div class="card-square ripple" onclick="renderItems('${cat.id}')">
                     <img src="${fixUrl(cat.thumb || cat.image)}" class="cat-img"><div class="cat-title">${cat.name}</div></div>`;
             });
+
+            if (!isHistoryPop) history.pushState({ view: 'home' }, '', window.location.pathname);
         }
 
-        function renderItems(catId) {
+        function renderItems(catId, isHistoryPop = false) {
             const cat = menuData.find(c => c.id === catId); if(!cat) return;
             currentCatItems = cat.items || []; document.getElementById('searchInput').value = '';
             document.getElementById('searchContainer').style.display = 'block';
-            document.getElementById('heroBanner').style.display = 'none'; // إخفاء الوصف عند الدخول لقسم
+            document.getElementById('heroBanner').style.display = 'none'; 
             document.getElementById('backBtn').style.display = 'block';
             drawItems(cat.name, currentCatItems);
+
+            if (!isHistoryPop) history.pushState({ view: 'category', id: catId }, '', '#category-' + catId);
         }
 
         function drawItems(title, items) {
@@ -269,10 +295,19 @@
             document.getElementById('modalPrice').innerText = `${currentModalItem.price} ${itemCur}`;
             document.getElementById('modalDesc').innerText = currentModalItem.description || '';
             updateModalUI();
-            document.getElementById('productModal').classList.add('active'); document.getElementById('modalOverlay').classList.add('active');
+            
+            history.pushState({ view: 'modal' }, '', '#product'); // تسجيل فتح المنتج في السجل
+            document.getElementById('productModal').classList.add('active'); 
+            document.getElementById('modalOverlay').classList.add('active');
         }
 
-        function closeProductModal() { document.getElementById('productModal').classList.remove('active'); document.getElementById('modalOverlay').classList.remove('active'); }
+        function closeProductModal(fromHistory = false) { 
+            document.getElementById('productModal').classList.remove('active'); 
+            document.getElementById('modalOverlay').classList.remove('active'); 
+            // إذا أُغلقت يدوياً وليس من زر الرجوع، نُرجع السجل خطوة لتنظيف الرابط
+            if (!fromHistory && history.state && history.state.view === 'modal') history.back();
+        }
+
         function changeModalQty(ch) { currentModalQty = Math.max(1, currentModalQty + ch); updateModalUI(); }
         
         function updateModalUI() { 
@@ -289,7 +324,6 @@
 
         function updateItemQty(id, ch) { let i = cart.findIndex(x => x.id === id); if(i > -1) { cart[i].qty += ch; if(cart[i].qty <= 0) cart.splice(i, 1); updateCartUI(); } }
         
-        // دالة تحسب إجمالي كل عملة لوحدها
         function getCartTotalsStr() {
             let totals = {};
             cart.forEach(i => {
@@ -320,8 +354,23 @@
             }).join('');
         }
 
-        function toggleCart() { document.getElementById('cartSheet').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
-        function closeAllOverlays() { document.getElementById('cartSheet').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+        function toggleCart() { 
+            const sheet = document.getElementById('cartSheet');
+            if (sheet.classList.contains('active')) {
+                closeCartUI();
+            } else {
+                history.pushState({ view: 'cart' }, '', '#cart'); // تسجيل فتح السلة
+                sheet.classList.add('active'); 
+                document.getElementById('overlay').classList.add('active'); 
+            }
+        }
+
+        function closeCartUI(fromHistory = false) {
+            document.getElementById('cartSheet').classList.remove('active'); 
+            document.getElementById('overlay').classList.remove('active');
+            if (!fromHistory && history.state && history.state.view === 'cart') history.back();
+        }
+
         function sendWhatsApp() {
             if(!cart.length) return; let m = "*" + (appSettings.whatsapp_template || "طلب جديد") + "*\n\n";
             cart.forEach(i => { 
@@ -331,6 +380,7 @@
             });
             window.location.href = `https://wa.me/${appSettings.whatsapp_number.replace(/\D/g, '')}?text=${encodeURIComponent(m + `\n*الإجمالي المطلوب: ${getCartTotalsStr()}*`)}`;
         }
+        
         window.onload = initApp;
     </script>
 </body>
