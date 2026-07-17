@@ -65,7 +65,6 @@
         
         .section-title { font-weight: 900; font-size: 1.2rem; color: var(--primary); margin: 25px 0 15px 0; display: flex; align-items: center; gap: 8px; }
 
-        /* نافذة القص */
         .crop-modal { position: fixed; inset: 0; background: #000; z-index: 10005; display: none; flex-direction: column; }
         .crop-area { flex-grow: 1; overflow: hidden; background: #111; }
         .crop-actions { background: #222; padding: 20px; display: flex; justify-content: space-between; gap: 15px; }
@@ -101,8 +100,8 @@
 
     <div id="view-settings" class="view">
         <div class="card" style="flex-direction: column; align-items: stretch; gap: 0;">
-            <div class="section-title">✨ الهوية والأرقام</div>
             
+            <div class="section-title">✨ الهوية والأرقام</div>
             <label style="font-weight:800; margin-bottom:10px; display:block;">شعار المطعم (اللوغو)</label>
             <div class="image-upload-box">
                 <input type="file" accept="image/*" onchange="handleLogoSelection(event)">
@@ -119,6 +118,15 @@
             <div class="input-group"><label>رقم الواتساب (بدون +)</label><input type="text" id="sWhatsApp" oninput="updateSetting('whatsapp_number', this.value)"></div>
             <div class="input-group"><label>رسالة الواتساب التلقائية</label><textarea id="sMsg" rows="2" oninput="updateSetting('whatsapp_template', this.value)"></textarea></div>
             <div class="input-group"><label>العملة الافتراضية للجميع</label><input type="text" id="sCurrency" oninput="updateSetting('currency', this.value)"></div>
+
+            <div class="section-title">🎵 المؤثرات الصوتية</div>
+            <div class="image-upload-box">
+                <input type="file" accept="audio/*" onchange="handleAudioSelection(event)">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">🔊</div>
+                <div style="font-weight:800;">تغيير صوت النقر على الأزرار</div>
+                <audio id="sAudioPreview" controls style="display:none; width:100%; margin-top:15px; border-radius: 50px; z-index: 5; position: relative;"></audio>
+            </div>
+
         </div>
     </div>
 
@@ -135,7 +143,6 @@
         <div class="input-group"><label>اسم المنتج</label><input type="text" id="pName"></div>
         <div class="input-group"><label>الوصف</label><textarea id="pDesc" rows="2"></textarea></div>
         
-        <!-- تعديل لتقسيم السعر والعملة -->
         <div style="display: flex; gap: 10px;">
             <div class="input-group" style="flex: 2;"><label>السعر</label><input type="number" id="pPrice"></div>
             <div class="input-group" style="flex: 1;">
@@ -180,7 +187,8 @@
         let PAT = localStorage.getItem('gh_pat'), menuData = { categories: [] }, appSettings = {};
         let editId = null, editOldCatId = null, currentImgPath = null, currentThumbPath = null; 
         
-        let tempUploads = { product: null, category: null, settings: null };
+        // أضفنا "audio" لكي نرفع ملف الصوت مع الاعدادات
+        let tempUploads = { product: null, category: null, settings: null, audio: null };
         let cropperInstance = null; let currentCropType = null; let originalFileName = "";
 
         function utoa(str) { return btoa(unescape(encodeURIComponent(str))); }
@@ -195,7 +203,7 @@
         }
 
         function markUnsaved() { document.getElementById('saveAllBanner').classList.add('visible'); }
-        function getImgSrc(imgStr) { return (!imgStr) ? 'https://via.placeholder.com/70' : (imgStr.startsWith('data:image') ? imgStr : `../${imgStr.replace('./', '')}`); }
+        function getImgSrc(imgStr) { return (!imgStr) ? 'https://via.placeholder.com/70' : (imgStr.startsWith('data:image') || imgStr.startsWith('data:audio') ? imgStr : `../${imgStr.replace('./', '')}`); }
 
         async function ghApi(path, method = 'GET', body = null) {
             const options = { method, headers: { 'Authorization': `Bearer ${PAT}`, 'Content-Type': 'application/json' }, cache: 'no-store' };
@@ -233,16 +241,34 @@
         function populateSettingsUI() {
             const map = { sName:'store_name', sDesc:'store_desc', sHero:'hero_subtitle', sFb:'facebook_url', sInsta:'instagram_url', sWhatsApp:'whatsapp_number', sMsg:'whatsapp_template', sCurrency:'currency' };
             for(let id in map) if(document.getElementById(id)) document.getElementById(id).value = appSettings[map[id]] || '';
+            
             if(appSettings.logo) { document.getElementById('sLogoPreview').src = getImgSrc(appSettings.logo); document.getElementById('sLogoPreview').style.display = 'inline-block'; }
+            
+            if(appSettings.click_sound) {
+                document.getElementById('sAudioPreview').src = getImgSrc(appSettings.click_sound);
+                document.getElementById('sAudioPreview').style.display = 'block';
+            }
         }
+        
         function updateSetting(k, v) { appSettings[k] = v; markUnsaved(); }
         
         function handleLogoSelection(e) {
             const file = e.target.files[0]; if(!file) return;
             const r = new FileReader(); r.onload = function(ev) {
                 document.getElementById('sLogoPreview').src = ev.target.result; document.getElementById('sLogoPreview').style.display = 'inline-block';
-                tempUploads.settings = { base64: ev.target.result.split(',')[1], ext: file.name.split('.').pop(), fullData: ev.target.result };
+                tempUploads.settings = { base64: ev.target.result.split(',')[1], ext: file.name.split('.').pop() };
                 appSettings.logo = ev.target.result; markUnsaved();
+            }; r.readAsDataURL(file);
+        }
+
+        function handleAudioSelection(e) {
+            const file = e.target.files[0]; if(!file) return;
+            const r = new FileReader(); r.onload = function(ev) {
+                document.getElementById('sAudioPreview').src = ev.target.result;
+                document.getElementById('sAudioPreview').style.display = 'block';
+                tempUploads.audio = { base64: ev.target.result.split(',')[1], ext: file.name.split('.').pop() };
+                appSettings.click_sound = ev.target.result; 
+                markUnsaved();
             }; r.readAsDataURL(file);
         }
 
@@ -255,11 +281,9 @@
                 document.getElementById('cropperImage').src = e.target.result;
                 document.getElementById('cropModal').style.display = 'flex';
                 if(cropperInstance) cropperInstance.destroy();
-                cropperInstance = new Cropper(document.getElementById('cropperImage'), {
-                    aspectRatio: 1, viewMode: 2, dragMode: 'move', autoCropArea: 0.9
-                });
+                cropperInstance = new Cropper(document.getElementById('cropperImage'), { aspectRatio: 1, viewMode: 2, dragMode: 'move', autoCropArea: 0.9 });
             }; reader.readAsDataURL(file);
-            event.target.value = ''; // reset
+            event.target.value = '';
         }
 
         function cancelCrop() { document.getElementById('cropModal').style.display = 'none'; if(cropperInstance) cropperInstance.destroy(); }
@@ -291,12 +315,12 @@
             cancelCrop();
         }
 
-        // ================= ترتيب الأقسام والمنتجات (الأزرار العائدة) =================
+        // ================= ترتيب الأقسام والمنتجات =================
         function moveCategory(index, direction) {
             const temp = menuData.categories[index];
             menuData.categories[index] = menuData.categories[index + direction];
             menuData.categories[index + direction] = temp;
-            markUnsaved(); renderCategories(); renderProducts(); // تحديث قائمة المنتجات لتعكس الترتيب
+            markUnsaved(); renderCategories(); renderProducts();
         }
 
         function moveProduct(catId, index, direction) {
@@ -357,7 +381,6 @@
         function applyCategoryChange() {
             const name = document.getElementById('cName').value;
             if(!name || (!tempUploads.category && !editId && !currentImgPath)) return alert("الاسم والصورة مطلوبان");
-            
             let catObj = editId ? menuData.categories.find(c => c.id === editId) : { id: `c_${Date.now()}`, items: [] };
             catObj.name = name;
             
@@ -416,6 +439,13 @@
                     const path = `images/logo_${Date.now()}.${tempUploads.settings.ext}`;
                     await ghApi(path, 'PUT', { message: 'Update Logo', content: tempUploads.settings.base64 });
                     appSettings.logo = `./${path}`; tempUploads.settings = null;
+                }
+
+                // رفع ملف الصوت
+                if (tempUploads.audio) {
+                    const path = `images/sound_${Date.now()}.${tempUploads.audio.ext}`;
+                    await ghApi(path, 'PUT', { message: 'Update Click Sound', content: tempUploads.audio.base64 });
+                    appSettings.click_sound = `./${path}`; tempUploads.audio = null;
                 }
 
                 for (let cat of menuData.categories) {
