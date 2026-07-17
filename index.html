@@ -110,7 +110,6 @@
     <div id="splash-screen"><div class="spinner"></div><h2 style="color: white; font-weight: 900;">جاري التجهيز...</h2></div>
     <div id="toast-container"></div>
     
-    <!-- إغلاق النوافذ عند الضغط في الخارج تم ربطه بدالة الإغلاق المخصصة -->
     <div class="overlay" id="overlay" onclick="closeCartUI()"></div>
     <div class="modal-overlay" id="modalOverlay" onclick="closeProductModal()"></div>
 
@@ -123,7 +122,6 @@
                     <span class="store-desc" id="siteDesc"></span>
                 </div>
             </div>
-            <!-- زر الرجوع هنا تم ربطه بـ history.back -->
             <button class="back-btn ripple" id="backBtn" onclick="history.back()">الرئيسية</button>
         </div>
         <div class="search-container" id="searchContainer" style="display: none;">
@@ -132,9 +130,7 @@
     </div>
 
     <div class="hero-banner" id="heroBanner"></div>
-
     <div class="kiosk-grid" id="mainContainer"></div>
-
     <div class="social-footer" id="socialFooter"></div>
 
     <a href="#" class="whatsapp-float" id="waFloat" target="_blank" style="display:none;">
@@ -184,6 +180,8 @@
 
     <script>
         let appSettings = {}, menuData = [], cart = [], currentCatItems = [], currentModalItem = null, currentModalQty = 1;
+        let clickAudioUrl = null; // رابط ملف الصوت المُحمّل
+
         function fixUrl(url) { return (!url || url.startsWith('http')) ? url : './' + url.replace(/^\/+/, ''); }
         
         function showToast(msg) { 
@@ -194,27 +192,44 @@
         // ================== نظام التوجيه وزر الرجوع (Routing & History API) ==================
         window.addEventListener('popstate', (e) => {
             const state = e.state;
-            
-            // 1. إغلاق أي نوافذ منبثقة أو سلة بشكل إجباري عند ضغط زر الرجوع في الهاتف
             document.getElementById('productModal').classList.remove('active');
             document.getElementById('modalOverlay').classList.remove('active');
             document.getElementById('cartSheet').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
 
-            // 2. توجيه المستخدم حسب السجل (للأقسام أو للمنتجات)
-            if (!state || state.view === 'home') {
-                renderCategories(true); // true تعني لا تقم بدفع حالة جديدة للسجل
-            } else if (state.view === 'category') {
-                renderItems(state.id, true);
-            }
+            if (!state || state.view === 'home') { renderCategories(true); } 
+            else if (state.view === 'category') { renderItems(state.id, true); }
         });
         // ===================================================================================
+
+        // ================== نظام تشغيل الصوت (Suiiiii أو غيره) ==================
+        // وظيفة تشغيل الصوت بنسخة جديدة ليتداخلوا بدون مشاكل
+        function playClickSound() {
+            if(!clickAudioUrl) return;
+            const sound = new Audio(clickAudioUrl);
+            sound.play().catch(e => { /* تجاهل أخطاء المتصفح إذا منع التشغيل التلقائي */ });
+        }
+
+        // استماع للضغطات على الأزرار لتشغيل الصوت
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('button, .card-square, .cart-fab, .social-btn, .whatsapp-float')) {
+                playClickSound();
+            }
+        });
+        // =====================================================================
 
         async function initApp() {
             try {
                 const [setRes, menuRes] = await Promise.all([fetch('./settings.json?v=' + Date.now()), fetch('./menu.json?v=' + Date.now())]);
                 appSettings = await setRes.json(); const mData = await menuRes.json(); menuData = mData.categories || [];
             } catch { alert("خطأ في جلب البيانات"); }
+
+            // إعداد رابط ملف الصوت
+            if(appSettings.click_sound) {
+                clickAudioUrl = fixUrl(appSettings.click_sound);
+                // Preload: نقوم بتحميل الصوت مسبقاً ليكون جاهزاً فوراً
+                new Audio(clickAudioUrl).preload = 'auto';
+            }
 
             document.getElementById('siteLogo').src = fixUrl(appSettings.logo);
             document.getElementById('siteName').innerText = appSettings.store_name || ""; 
@@ -224,9 +239,7 @@
             document.getElementById('uiCartTitle').innerText = appSettings.ui_cart_title || "طلباتك"; 
             document.getElementById('uiCheckoutBtn').innerText = appSettings.ui_checkout_btn || "إرسال الطلب";
 
-            if(appSettings.hero_subtitle) { 
-                document.getElementById('heroBanner').innerText = appSettings.hero_subtitle; 
-            }
+            if(appSettings.hero_subtitle) { document.getElementById('heroBanner').innerText = appSettings.hero_subtitle; }
             
             let socialHTML = "";
             if(appSettings.facebook_url) socialHTML += `<a href="${appSettings.facebook_url}" target="_blank" class="social-btn"><svg viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg></a>`;
@@ -241,12 +254,10 @@
 
             setTimeout(() => { const sp = document.getElementById('splash-screen'); sp.style.opacity = '0'; setTimeout(() => sp.style.display = 'none', 600); }, 600);
             
-            // تهيئة السجل في البداية ليكون في صفحة الأقسام
             history.replaceState({ view: 'home' }, '', window.location.pathname);
             renderCategories(true);
         }
 
-        // تم إضافة isHistoryPop لمنع تسجيل السجل مرتين عند الرجوع
         function renderCategories(isHistoryPop = false) {
             document.getElementById('searchContainer').style.display = 'none';
             if(appSettings.hero_subtitle) document.getElementById('heroBanner').style.display = 'block';
@@ -256,7 +267,6 @@
                 c.innerHTML += `<div class="card-square ripple" onclick="renderItems('${cat.id}')">
                     <img src="${fixUrl(cat.thumb || cat.image)}" class="cat-img"><div class="cat-title">${cat.name}</div></div>`;
             });
-
             if (!isHistoryPop) history.pushState({ view: 'home' }, '', window.location.pathname);
         }
 
@@ -267,7 +277,6 @@
             document.getElementById('heroBanner').style.display = 'none'; 
             document.getElementById('backBtn').style.display = 'block';
             drawItems(cat.name, currentCatItems);
-
             if (!isHistoryPop) history.pushState({ view: 'category', id: catId }, '', '#category-' + catId);
         }
 
@@ -296,7 +305,7 @@
             document.getElementById('modalDesc').innerText = currentModalItem.description || '';
             updateModalUI();
             
-            history.pushState({ view: 'modal' }, '', '#product'); // تسجيل فتح المنتج في السجل
+            history.pushState({ view: 'modal' }, '', '#product'); 
             document.getElementById('productModal').classList.add('active'); 
             document.getElementById('modalOverlay').classList.add('active');
         }
@@ -304,7 +313,6 @@
         function closeProductModal(fromHistory = false) { 
             document.getElementById('productModal').classList.remove('active'); 
             document.getElementById('modalOverlay').classList.remove('active'); 
-            // إذا أُغلقت يدوياً وليس من زر الرجوع، نُرجع السجل خطوة لتنظيف الرابط
             if (!fromHistory && history.state && history.state.view === 'modal') history.back();
         }
 
@@ -359,7 +367,7 @@
             if (sheet.classList.contains('active')) {
                 closeCartUI();
             } else {
-                history.pushState({ view: 'cart' }, '', '#cart'); // تسجيل فتح السلة
+                history.pushState({ view: 'cart' }, '', '#cart');
                 sheet.classList.add('active'); 
                 document.getElementById('overlay').classList.add('active'); 
             }
