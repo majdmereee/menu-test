@@ -26,6 +26,20 @@
       "name": "تحسين",
       "image": "./images/cat_1784236668846_510.png",
       "items": []
+    },
+    {
+      "id": "c_1784318509908",
+      "name": "صوصات",
+      "image": "./images/cat_1784318539342_796.jpg",
+      "items": [
+        {
+          "id": "i_1784318534414",
+          "name": "ريو",
+          "description": "٣ كغ تكة",
+          "price": "12",
+          "image": "./images/prod_1784318545589_32.jpg"
+        }
+      ]
     }
   ]
 }
