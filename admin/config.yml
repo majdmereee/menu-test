@@ -7,7 +7,6 @@ backend:
 
 locale: 'ar'
 
-# 🟢 إعدادات رفع الصور المضمونة (بدون علامة / في البداية)
 media_folder: "images"
 public_folder: "images"
 
@@ -22,6 +21,9 @@ collections:
           - { label: "شعار الموقع", name: "logo", widget: "image" }
           - { label: "اسم المطعم", name: "store_name", widget: "string" }
           - { label: "الوصف تحت الاسم", name: "store_desc", widget: "string" }
+          - { label: "الوصف التسويقي (الاحترافي)", name: "hero_subtitle", widget: "text", default: "شركة متخصصة بتلبية احتياجات المطاعم والفنادق والكافيه بأفضل سعر وأفضل جودة" }
+          - { label: "رابط فيسبوك", name: "facebook_url", widget: "string", required: false }
+          - { label: "رابط انستغرام", name: "instagram_url", widget: "string", required: false }
           - { label: "رقم الواتساب (بدون +)", name: "whatsapp_number", widget: "string" }
           - { label: "رسالة الواتساب", name: "whatsapp_template", widget: "text" }
           - { label: "العملة", name: "currency", widget: "string" }
@@ -43,14 +45,16 @@ collections:
             name: "categories"
             widget: "list"
             fields:
-              - { label: "معرف القسم (مثل c1)", name: "id", widget: "string" }
+              - { label: "معرف القسم", name: "id", widget: "string" }
               - { label: "اسم القسم", name: "name", widget: "string" }
               - { label: "صورة القسم", name: "image", widget: "image" }
+              - { label: "الصورة المصغرة (المربعة)", name: "thumb", widget: "image", required: false }
               - label: "الأصناف"
                 name: "items"
                 widget: "list"
                 fields:
-                  - { label: "المعرف (مثل i1)", name: "id", widget: "string" }
+                  - { label: "المعرف", name: "id", widget: "string" }
                   - { label: "اسم الصنف", name: "name", widget: "string" }
                   - { label: "السعر", name: "price", widget: "string" }
-                  - { label: "صورة الصنف", name: "image", widget: "image" }
+                  - { label: "صورة الصنف الأصلية", name: "image", widget: "image" }
+                  - { label: "صورة الصنف المصغرة", name: "thumb", widget: "image", required: false }
